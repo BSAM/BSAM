@@ -97,7 +97,6 @@ contains
           MultiGridUserBreak(eqtag, residual, oldresidual)) exit vcycleloop
       oldresidual = residual
     end do vcycleloop
-    ! if (itmg-1==maxvcycles) stop "No results for you, I demand convergence!"
     !
   end subroutine MultigridIterations
   ! ---------------------------------------------------------------------------
@@ -116,7 +115,7 @@ contains
     case(1)
       !
       ! Blended error calculation:
-      integralresult(1:2) = 0.0
+      integralresult(1:2) = 0.0_r8
       !
       call ApplyOnLevel(level,L2Error,dummy)
       !
@@ -126,8 +125,8 @@ contains
       ! Component errors:
       ierror = GetRootInfo(rootinfo)
       nrvars = rootinfo%nrvars
-      integralresult(2) = 0.0
-      componentintegral(1:nrvars) = 0.0
+      integralresult(2) = 0.0_r8
+      componentintegral(1:nrvars) = 0.0_r8
       !
       call ApplyOnLevel(level,L2ComponentErrors,dummy)
       !
@@ -246,7 +245,6 @@ contains
     integer                           :: field, ierror, nrvars
     integer, dimension(1:maxdims)     :: cmx, mx
     integer, dimension(1:maxdims,1:2) :: mb
-  ! integer                           :: maux, mmaux
     !
     FillDownLevel = err_ok
     !
@@ -261,9 +259,6 @@ contains
     mx(1:ndims)     = info%mx(1:ndims)
     cmx(1:ndims)    = mx(1:ndims)/2
     mb(1:ndims,1:2) = info%mbounds(1:ndims,1:2)
-    !
-    !maux = info%maux
-    !mmaux = max(maux,1)
     !
     ierror = GetParentInfo(parent)
     !

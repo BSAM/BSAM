@@ -173,6 +173,7 @@ contains
     end if
     !
     ! Faces:
+    !
     select case(mthbc(1))
     case(2,999) ! Periodic or Internal boundary.
       !
@@ -377,9 +378,9 @@ contains
     ! Nonempty; begin transfer:
     !
     ! ovg1 is the global overlap of ovg and mg2
-
+    !
     ! ovg2 is the global overlap of ovg and mg1
-
+    !
     ! These must have nonempty overlap:
     ovg1 = 1
     ovg2 = 1
@@ -548,7 +549,9 @@ contains
       !
       ! Nonempty; begin transfer:
       !
+      !
       ! ovg1 is the global overlap of ovg and mg2
+      !
       ! ovg2 is the global overlap of ovg and mg1
       !
       ! These must have nonempty overlap:
@@ -1315,7 +1318,8 @@ contains
     !
     ! Faces that are on physical boundaries have mthbc(face) equal to a number
     ! other than 2 and 999. If the face is on a physical boundary its ghost
-    ! points aren't found by interpolation.  interpol
+    ! points aren't found by interpolation.
+    ! interpol
     !
     ! (1) Interpolate the 8 corners of each box.  We only interpolate on the
     !     physical boundaries if ipass = 0, 2:
