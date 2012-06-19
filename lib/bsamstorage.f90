@@ -46,10 +46,10 @@ contains
   subroutine AllocFields(info,parent)
     use NodeInfoDef
     implicit none
-    type(nodeinfo) :: info
-    type(nodeinfo), intent(in), OPTIONAL :: parent
-    integer :: ierror, maux, mmaux, mbc, n, nrvars
-    integer, dimension(1:maxdims) :: amx, cmx, mx
+    type(nodeinfo)                       :: info
+    type(nodeinfo), intent(in), optional :: parent
+    integer                              :: ierror,maux,mmaux,mbc,n,nrvars
+    integer, dimension(1:maxdims)        :: amx, cmx, mx
     !
     mx = info%mx
     mbc = info%mbc
@@ -153,7 +153,7 @@ contains
     implicit none
     integer, intent(in) :: np
     integer, intent(in) :: nrvars
-    integer :: ierror
+    integer             :: ierror
     !
     allocate(periodicoffsetindex(1:np),poffset(1:maxdims,1:np), &
              qoffset(1:np,1:nrvars),STAT=ierror)
@@ -179,10 +179,10 @@ contains
     use NodeInfoDef
     implicit none
     integer, dimension(1:maxdims), intent(in) :: mxroot ! root-level grid size.
-    integer, intent(in) :: mbc
-    integer, intent(in) :: nrvars
-    integer :: ierror, level
-    integer, dimension(1:maxdims) :: high, low, mx
+    integer,                       intent(in) :: mbc
+    integer,                       intent(in) :: nrvars
+    integer                                   :: ierror, level
+    integer, dimension(1:maxdims)             :: high, low, mx
     !
     mx = 1
     low = 1

@@ -46,18 +46,18 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,0:), intent(in) :: a
-    real(kind=r8), dimension(1:size(a,1)-2,1:size(a,2)-2) :: ulapresult
-    integer, dimension(1:2) :: mx
+    real, dimension(0:,0:), intent(in)           :: a
+    real, dimension(1:size(a,1)-2,1:size(a,2)-2) :: ulapresult
+    integer, dimension(1:2)                      :: mx
     !
     mx(1) = size(a,1)-2
     mx(2) = size(a,2)-2
     !
-    ulapresult(1:mx(1),1:mx(2)) =          a(2:mx(1)+1,1:mx(2)  ) &
-                                  +        a(0:mx(1)-1,1:mx(2)  ) &
-                                  +        a(1:mx(1)  ,2:mx(2)+1) &
-                                  +        a(1:mx(1)  ,0:mx(2)-1) &
-                                  - 4.0_r8*a(1:mx(1)  ,1:mx(2)  )
+    ulapresult(1:mx(1),1:mx(2)) =       a(2:mx(1)+1,1:mx(2)  ) &
+                                  +     a(0:mx(1)-1,1:mx(2)  ) &
+                                  +     a(1:mx(1)  ,2:mx(2)+1) &
+                                  +     a(1:mx(1)  ,0:mx(2)-1) &
+                                  - 4.0*a(1:mx(1)  ,1:mx(2)  )
     !
   end function ULap2D
   ! ---------------------------------------------------------------------------
@@ -71,10 +71,10 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,1:), intent(in) :: f1
-    real(kind=r8), dimension(1:,0:), intent(in) :: f2
-    real(kind=r8), dimension(1:size(f2,1),1:size(f1,2)) :: udivresult
-    integer, dimension(1:2) :: mx
+    real, dimension(0:,1:), intent(in)         :: f1
+    real, dimension(1:,0:), intent(in)         :: f2
+    real, dimension(1:size(f2,1),1:size(f1,2)) :: udivresult
+    integer, dimension(1:2)                    :: mx
     !
     mx(1) = size(f2,1)
     mx(2) = size(f1,2)
@@ -89,12 +89,12 @@ contains
   function Restriction2D(a) result(restrictionresult)
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(:,:,:), intent(in) :: a
-    real(kind=r8), dimension(1:size(a,1)/2, &
-                             1:size(a,2)/2, &
-                             1:size(a,3)) :: restrictionresult
-    integer :: nrvars
-    integer, dimension(1:2) :: cmx, mx
+    real, dimension(:,:,:), intent(in) :: a
+    real, dimension(1:size(a,1)/2, &
+                    1:size(a,2)/2, &
+                    1:size(a,3))       :: restrictionresult
+    integer                            :: nrvars
+    integer, dimension(1:2)            :: cmx, mx
     !
     mx(1)  = size(a,1)
     mx(2)  = size(a,2)
@@ -102,10 +102,10 @@ contains
     cmx(1:2) = mx(1:2)/2
     !
     restrictionresult(1:cmx(1),1:cmx(2),1:nrvars) &
-                      =   0.25_r8*(a(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
-                        +          a(1:mx(1)-1:2,2:mx(2)  :2,1:nrvars) &
-                        +          a(2:mx(1)  :2,1:mx(2)-1:2,1:nrvars) &
-                        +          a(1:mx(1)-1:2,1:mx(2)-1:2,1:nrvars))
+                      =   0.25*(a(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
+                        +       a(1:mx(1)-1:2,2:mx(2)  :2,1:nrvars) &
+                        +       a(2:mx(1)  :2,1:mx(2)-1:2,1:nrvars) &
+                        +       a(1:mx(1)-1:2,1:mx(2)-1:2,1:nrvars))
     !
   end function Restriction2D
   ! ---------------------------------------------------------------------------
@@ -115,12 +115,12 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(:,:,:), intent(in) :: a
-    real(kind=r8), dimension(1:size(a,1)*2, &
-                             1:size(a,2)*2, &
-                             1:size(a,3)) :: presult
-    integer :: nrvars
-    integer, dimension(1:2) :: cmx, mx
+    real, dimension(:,:,:), intent(in) :: a
+    real, dimension(1:size(a,1)*2, &
+                    1:size(a,2)*2, &
+                    1:size(a,3))       :: presult
+    integer                            :: nrvars
+    integer, dimension(1:2)            :: cmx, mx
     !
     cmx(1) = size(a,1)
     cmx(2) = size(a,2)
@@ -141,15 +141,15 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,0:,1:), intent(in) :: a
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0:(size(a,2)-2)*2+1, &
-                             1: size(a,3)       ) :: presult
-    integer :: nrvars
-    integer, dimension(1:2) :: cmx, mx
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0: size(a,2)-2   +1, &
-                             1: size(a,3)       ) :: b
+    real, dimension(0:,0:,1:), intent(in) :: a
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0:(size(a,2)-2)*2+1, &
+                    1: size(a,3)) :: presult
+    integer                       :: nrvars
+    integer, dimension(1:2)       :: cmx, mx
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0: size(a,2)-2   +1, &
+                    1: size(a,3)) :: b
     !
     cmx(1) = size(a,1)-2
     cmx(2) = size(a,2)-2
@@ -158,19 +158,19 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(0: mx(1)  :2,0:cmx(2)+1  ,1:nrvars) &
-      =    3.0_r8*a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
-        +         a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
+      =    3.0*a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
+        +      a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
     b(1: mx(1)+1:2,0:cmx(2)+1  ,1:nrvars) &
-      =           a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
-        +  3.0_r8*a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
+      =        a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
+        +  3.0*a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     presult(0: mx(1)+1  ,0: mx(2)  :2,1:nrvars) &
-            =   (3.0_r8*b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
-              +         b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0_r8
+            =   (3.0*b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
+              +      b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0
     presult(0: mx(1)+1  ,1: mx(2)+1:2,1:nrvars) &
-            =   (       b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
-              +  3.0_r8*b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0_r8
+            =   (    b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
+              +  3.0*b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0
     !
   end function BiLinProlongationP1
   ! ---------------------------------------------------------------------------
@@ -181,15 +181,15 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(-1:,-1:,1:), intent(in) :: a
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1:(size(a,2)-4)*2+2, &
-                              1: size(a,3)       ) :: presult
-    integer :: nrvars
-    integer, dimension(1:2) :: cmx, mx
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1: size(a,2)-4   +2, &
-                              1: size(a,3)       ) :: b
+    real, dimension(-1:,-1:,1:), intent(in) :: a
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1:(size(a,2)-4)*2+2, &
+                     1: size(a,3)       ) :: presult
+    integer                               :: nrvars
+    integer, dimension(1:2)               :: cmx, mx
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1: size(a,2)-4   +2, &
+                     1: size(a,3)       ) :: b
     !
     cmx(1) = size(a,1)-4
     cmx(2) = size(a,2)-4
@@ -198,21 +198,21 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(-1: mx(1)+1:2,-1:cmx(2)+2  ,1:nrvars) &
-      =    3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
-        +         a(-1:cmx(1)    ,-1:cmx(2)+2  ,1:nrvars)
+      =    3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
+        +      a(-1:cmx(1)    ,-1:cmx(2)+2  ,1:nrvars)
     !
     b( 0: mx(1)+2:2,-1:cmx(2)+2  ,1:nrvars) &
-      =    3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
-        +         a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,1:nrvars)
+      =    3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
+        +      a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     presult(-1: mx(1)+2  ,-1: mx(2)+1:2,1:nrvars) &
-            =   (3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
-              +         b(-1: mx(1)+2  ,-1:cmx(2)    ,1:nrvars))/16.0_r8
+            =   (3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
+              +      b(-1: mx(1)+2  ,-1:cmx(2)    ,1:nrvars))/16.0
     !
     presult(-1: mx(1)+2  , 0: mx(2)+2:2,1:nrvars) &
-            =   (3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
-              +         b(-1: mx(1)+2  , 1:cmx(2)+2  ,1:nrvars))/16.0_r8
+            =   (3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
+              +      b(-1: mx(1)+2  , 1:cmx(2)+2  ,1:nrvars))/16.0
     !
   end function BiLinProlongationP2
   ! ---------------------------------------------------------------------------
@@ -223,18 +223,18 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,0:,1:), intent(in) :: a
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0:(size(a,2)-2)*2+1, &
-                             1: size(a,3)       ) :: presult
-    integer :: nrvars
-    integer, dimension(1:2) :: cmx, mx
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0: size(a,2)-2   +1, &
-                             1: size(a,3)       ) :: b
-    real(kind=r8), dimension(1: size(a,1)-2     , &
-                             1: size(a,2)-2     , &
-                             1: size(a,3)       ) :: cor
+    real, dimension(0:,0:,1:), intent(in) :: a
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0:(size(a,2)-2)*2+1, &
+                    1: size(a,3)       ) :: presult
+    integer                              :: nrvars
+    integer, dimension(1:2)              :: cmx, mx
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0: size(a,2)-2   +1, &
+                    1: size(a,3)       ) :: b
+    real, dimension(1: size(a,1)-2     , &
+                    1: size(a,2)-2     , &
+                    1: size(a,3)       ) :: cor
     !
     cmx(1) = size(a,1)-2
     cmx(2) = size(a,2)-2
@@ -243,28 +243,28 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(0: mx(1)  :2,0:cmx(2)+1  ,1:nrvars) &
-      =    3.0_r8*a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
-        +         a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
+      =    3.0*a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
+        +      a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
     b(1: mx(1)+1:2,0:cmx(2)+1  ,1:nrvars) &
-      =           a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
-        +  3.0_r8*a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
+      =        a(0:cmx(1)    ,0:cmx(2)+1  ,1:nrvars) &
+        +  3.0*a(1:cmx(1)+1  ,0:cmx(2)+1  ,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     presult(0: mx(1)+1  ,0: mx(2)  :2,1:nrvars) &
-            =   (3.0_r8*b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
-              +         b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0_r8
+            =   (3.0*b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
+              +      b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0
     presult(0: mx(1)+1  ,1: mx(2)+1:2,1:nrvars) &
-            =   (       b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
-              +  3.0_r8*b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0_r8
+            =   (    b(0: mx(1)+1  ,0:cmx(2)    ,1:nrvars) &
+              +  3.0*b(0: mx(1)+1  ,1:cmx(2)+1  ,1:nrvars))/16.0
     !
     ! The mass correction is computed only for regular cells, not for ghost
     ! cells.  Compute mass correction:
     cor(1:cmx(1),1:cmx(2),1:nrvars) &
         = a(1:cmx(1),1:cmx(2),1:nrvars) &
-            - 0.25_r8*(presult(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
-            +          presult(1:mx(1)-1:2,2:mx(2)  :2,1:nrvars) &
-            +          presult(2:mx(1)  :2,1:mx(2)-1:2,1:nrvars) &
-            +          presult(1:mx(1)-1:2,1:mx(2)-1:2,1:nrvars))
+            - 0.25*(presult(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
+            +       presult(1:mx(1)-1:2,2:mx(2)  :2,1:nrvars) &
+            +       presult(2:mx(1)  :2,1:mx(2)-1:2,1:nrvars) &
+            +       presult(1:mx(1)-1:2,1:mx(2)-1:2,1:nrvars))
     !
     ! Add the mass correction:
     presult(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
@@ -285,18 +285,18 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(-1:,-1:,1:), intent(in) :: a
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1:(size(a,2)-4)*2+2, &
-                              1: size(a,3)       ) :: presult
-    integer :: nrvars
-    integer, dimension(1:2) :: cmx, mx
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1: size(a,2)-4   +2, &
-                              1: size(a,3)       ) :: b
-    real(kind=r8), dimension( 1: size(a,1)-4     , &
-                              1: size(a,2)-4     , &
-                              1: size(a,3)       ) :: cor
+    real, dimension(-1:,-1:,1:), intent(in) :: a
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1:(size(a,2)-4)*2+2, &
+                     1: size(a,3)       ) :: presult
+    integer                               :: nrvars
+    integer, dimension(1:2)               :: cmx, mx
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1: size(a,2)-4   +2, &
+                     1: size(a,3)       ) :: b
+    real, dimension( 1: size(a,1)-4     , &
+                     1: size(a,2)-4     , &
+                     1: size(a,3)       ) :: cor
     !
     cmx(1) = size(a,1)-4
     cmx(2) = size(a,2)-4
@@ -305,30 +305,30 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(-1: mx(1)+1:2,-1:cmx(2)+2  ,1:nrvars) &
-      =    3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
-        +         a(-1:cmx(1)    ,-1:cmx(2)+2  ,1:nrvars)
+      =    3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
+        +      a(-1:cmx(1)    ,-1:cmx(2)+2  ,1:nrvars)
     !
     b( 0: mx(1)+2:2,-1:cmx(2)+2  ,1:nrvars) &
-      =    3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
-        +         a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,1:nrvars)
+      =    3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,1:nrvars) &
+        +      a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     presult(-1: mx(1)+2  ,-1: mx(2)+1:2,1:nrvars) &
-            =   (3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
-              +         b(-1: mx(1)+2  ,-1:cmx(2)    ,1:nrvars))/16.0_r8
+            =   (3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
+              +      b(-1: mx(1)+2  ,-1:cmx(2)    ,1:nrvars))/16.0
     !
     presult(-1: mx(1)+2  , 0: mx(2)+2:2,1:nrvars) &
-            =   (3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
-              +         b(-1: mx(1)+2  , 1:cmx(2)+2  ,1:nrvars))/16.0_r8
+            =   (3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,1:nrvars) &
+              +      b(-1: mx(1)+2  , 1:cmx(2)+2  ,1:nrvars))/16.0
     !
     ! The mass correction is computed only for regular cells, not for ghost
     ! cells.  Compute mass correction:
     cor(1:cmx(1),1:cmx(2),1:nrvars) &
         = a(1:cmx(1),1:cmx(2),1:nrvars) &
-            - 0.25_r8*(presult(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
-            +          presult(1:mx(1)-1:2,2:mx(2)  :2,1:nrvars) &
-            +          presult(2:mx(1)  :2,1:mx(2)-1:2,1:nrvars) &
-            +          presult(1:mx(1)-1:2,1:mx(2)-1:2,1:nrvars))
+            - 0.25*(presult(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
+            +       presult(1:mx(1)-1:2,2:mx(2)  :2,1:nrvars) &
+            +       presult(2:mx(1)  :2,1:mx(2)-1:2,1:nrvars) &
+            +       presult(1:mx(1)-1:2,1:mx(2)-1:2,1:nrvars))
     !
     ! Add the mass correction:
     presult(2:mx(1)  :2,2:mx(2)  :2,1:nrvars) &
@@ -349,24 +349,24 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,0:,0:), intent(in) :: a
-    real(kind=r8), dimension(1:size(a,1)-2, &
-                             1:size(a,2)-2, &
-                             1:size(a,3)-2) :: ulapresult
-    integer, dimension(1:3) :: mx
+    real, dimension(0:,0:,0:), intent(in) :: a
+    real, dimension(1:size(a,1)-2, &
+                    1:size(a,2)-2, &
+                    1:size(a,3)-2) :: ulapresult
+    integer, dimension(1:3)        :: mx
     !
     mx(1) = size(a,1)-2
     mx(2) = size(a,2)-2
     mx(3) = size(a,3)-2
     !
     ulapresult(1:mx(1),1:mx(2),1:mx(3)) &
-               =          a(2:mx(1)+1,1:mx(2)  ,1:mx(3)  ) &
-                 +        a(0:mx(1)-1,1:mx(2)  ,1:mx(3)  ) &
-                 +        a(1:mx(1)  ,2:mx(2)+1,1:mx(3)  ) &
-                 +        a(1:mx(1)  ,0:mx(2)-1,1:mx(3)  ) &
-                 +        a(1:mx(1)  ,1:mx(2)  ,2:mx(3)+1) &
-                 +        a(1:mx(1)  ,1:mx(2)  ,0:mx(3)-1) &
-                 - 6.0_r8*a(1:mx(1)  ,1:mx(2)  ,1:mx(3)  )
+               =       a(2:mx(1)+1,1:mx(2)  ,1:mx(3)  ) &
+                 +     a(0:mx(1)-1,1:mx(2)  ,1:mx(3)  ) &
+                 +     a(1:mx(1)  ,2:mx(2)+1,1:mx(3)  ) &
+                 +     a(1:mx(1)  ,0:mx(2)-1,1:mx(3)  ) &
+                 +     a(1:mx(1)  ,1:mx(2)  ,2:mx(3)+1) &
+                 +     a(1:mx(1)  ,1:mx(2)  ,0:mx(3)-1) &
+                 - 6.0*a(1:mx(1)  ,1:mx(2)  ,1:mx(3)  )
     !
   end function ULap3D
   ! ---------------------------------------------------------------------------
@@ -382,12 +382,12 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,1:,1:), intent(in) :: f1
-    real(kind=r8), dimension(1:,0:,1:), intent(in) :: f2
-    real(kind=r8), dimension(1:,1:,0:), intent(in) :: f3
-    real(kind=r8), dimension(1:size(f2,1), &
-                             1:size(f3,2), &
-                             1:size(f1,3)) :: udivresult
+    real, dimension(0:,1:,1:), intent(in) :: f1
+    real, dimension(1:,0:,1:), intent(in) :: f2
+    real, dimension(1:,1:,0:), intent(in) :: f3
+    real, dimension(1:size(f2,1), &
+                    1:size(f3,2), &
+                    1:size(f1,3)) :: udivresult
     integer, dimension(1:3) :: mx
     !
     mx(1) = size(f2,1)
@@ -406,14 +406,13 @@ contains
   function Restriction3D(a) result(restrictionresult)
     use NodeInfoDef
     implicit none
-    !
-    real(kind=r8), dimension(:,:,:,:), intent(in) :: a
-    real(kind=r8), dimension(1:size(a,1)/2, &
-                             1:size(a,2)/2, &
-                             1:size(a,3)/2, &
-                             1:size(a,4)) :: restrictionresult
-    integer :: nrvars
-    integer, dimension(1:3) :: cmx, mx
+    real, dimension(:,:,:,:), intent(in) :: a
+    real, dimension(1:size(a,1)/2, &
+                    1:size(a,2)/2, &
+                    1:size(a,3)/2, &
+                    1:size(a,4)) :: restrictionresult
+    integer                      :: nrvars
+    integer, dimension(1:3)      :: cmx, mx
     !
     mx(1)  = size(a,1)
     mx(2)  = size(a,2)
@@ -422,14 +421,14 @@ contains
     cmx(1:3) = mx(1:3)/2
     !
     restrictionresult(1:cmx(1),1:cmx(2),1:cmx(3),1:nrvars) &
-       =   0.125_r8*(a(2:mx(1)  :2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
-         +           a(1:mx(1)-1:2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
-         +           a(2:mx(1)  :2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
-         +           a(1:mx(1)-1:2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
-         +           a(2:mx(1)  :2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
-         +           a(1:mx(1)-1:2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
-         +           a(2:mx(1)  :2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars) &
-         +           a(1:mx(1)-1:2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars))
+       =   0.125*(a(2:mx(1)  :2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
+         +        a(1:mx(1)-1:2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
+         +        a(2:mx(1)  :2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
+         +        a(1:mx(1)-1:2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
+         +        a(2:mx(1)  :2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
+         +        a(1:mx(1)-1:2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
+         +        a(2:mx(1)  :2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars) &
+         +        a(1:mx(1)-1:2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars))
     !
   end function Restriction3D
   ! ---------------------------------------------------------------------------
@@ -439,13 +438,13 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(:,:,:,:), intent(in) :: a
-    real(kind=r8), dimension(1:size(a,1)*2, &
-                             1:size(a,2)*2, &
-                             1:size(a,3)*2, &
-                             1:size(a,4)) :: presult
-    integer :: nrvars
-    integer, dimension(1:3) :: cmx, mx
+    real, dimension(:,:,:,:), intent(in) :: a
+    real, dimension(1:size(a,1)*2, &
+                    1:size(a,2)*2, &
+                    1:size(a,3)*2, &
+                    1:size(a,4)) :: presult
+    integer                      :: nrvars
+    integer, dimension(1:3)      :: cmx, mx
     !
     cmx(1) = size(a,1)
     cmx(2) = size(a,2)
@@ -479,21 +478,21 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,0:,0:,1:), intent(in) :: a
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0:(size(a,2)-2)*2+1, &
-                             0:(size(a,3)-2)*2+1, &
-                             1: size(a,4)) :: presult
-    integer :: nrvars
-    integer, dimension(1:3) :: cmx, mx
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0: size(a,2)-2   +1, &
-                             0: size(a,3)-2   +1, &
-                             1: size(a,4)       ) :: b
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0:(size(a,2)-2)*2+1, &
-                             0: size(a,3)-2   +1, &
-                             1: size(a,4)       ) :: c
+    real, dimension(0:,0:,0:,1:), intent(in) :: a
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0:(size(a,2)-2)*2+1, &
+                    0:(size(a,3)-2)*2+1, &
+                    1: size(a,4)) :: presult
+    integer                       :: nrvars
+    integer, dimension(1:3)       :: cmx, mx
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0: size(a,2)-2   +1, &
+                    0: size(a,3)-2   +1, &
+                    1: size(a,4)       ) :: b
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0:(size(a,2)-2)*2+1, &
+                    0: size(a,3)-2   +1, &
+                    1: size(a,4)       ) :: c
     !
     cmx(1) = size(a,1)-2
     cmx(2) = size(a,2)-2
@@ -505,27 +504,27 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(0:mx(1)  :2,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-      =   3.0_r8*a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-        +        a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =   3.0*a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
+        +     a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     b(1:mx(1)+1:2,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-      =          a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-        + 3.0_r8*a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =       a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
+        + 3.0*a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     c(0:mx(1)+1,0:mx(2)  :2,0:cmx(3)+1,1:nrvars) &
-      =   3.0_r8*b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
-        +        b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =   3.0*b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
+        +     b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     c(0:mx(1)+1,1:mx(2)+1:2,0:cmx(3)+1,1:nrvars) &
-      =          b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
-        + 3.0_r8*b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =       b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
+        + 3.0*b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     !
     ! Linear interpolation in the z-direction third:
     presult(0:mx(1)+1,0:mx(2)+1,0:mx(3)  :2,1:nrvars) &
-            =   (3.0_r8*c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
-              +         c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0_r8
+            =   (3.0*c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
+              +      c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0
     presult(0:mx(1)+1,0:mx(2)+1,1:mx(3)+1:2,1:nrvars) &
-            =   (       c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
-              +  3.0_r8*c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0_r8
+            =   (    c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
+              +  3.0*c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0
     !
   end function TriLinProlongationP1
   ! ---------------------------------------------------------------------------
@@ -536,21 +535,21 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(-1:,-1:,-1:,1:), intent(in) :: a
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1:(size(a,2)-4)*2+2, &
-                             -1:(size(a,3)-4)*2+2, &
-                              1: size(a,4)       ) :: presult
-    integer :: nrvars
-    integer, dimension(1:3) :: cmx, mx
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1: size(a,2)-4   +2, &
-                             -1: size(a,3)-4   +2, &
-                              1: size(a,4)       ) :: b
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1:(size(a,2)-4)*2+2, &
-                             -1: size(a,3)-4   +2, &
-                              1: size(a,4)       ) :: c
+    real, dimension(-1:,-1:,-1:,1:), intent(in) :: a
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1:(size(a,2)-4)*2+2, &
+                    -1:(size(a,3)-4)*2+2, &
+                     1: size(a,4)       ) :: presult
+    integer                               :: nrvars
+    integer, dimension(1:3)               :: cmx, mx
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1: size(a,2)-4   +2, &
+                    -1: size(a,3)-4   +2, &
+                     1: size(a,4)       ) :: b
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1:(size(a,2)-4)*2+2, &
+                    -1: size(a,3)-4   +2, &
+                     1: size(a,4)       ) :: c
     !
     cmx(1) = size(a,1)-4
     cmx(2) = size(a,2)-4
@@ -560,29 +559,29 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(-1: mx(1)+1:2,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-        +        a(-1:cmx(1)    ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
+        +     a(-1:cmx(1)    ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
     !
     b( 0: mx(1)+2:2,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-        +        a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
+        +     a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     c(-1: mx(1)+2  ,-1: mx(2)+1:2,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
-        +        b(-1: mx(1)+2  ,-1:cmx(2)    ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
+        +     b(-1: mx(1)+2  ,-1:cmx(2)    ,-1:cmx(3)+2,1:nrvars)
     !
     c(-1: mx(1)+2  , 0: mx(2)+2:2,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
-        +        b(-1: mx(1)+2  , 1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
+        +     b(-1: mx(1)+2  , 1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
     !
     ! Linear interpolation in the z-direction second:
     presult(-1:mx(1)+2,-1:mx(2)+2,-1: mx(3)+1:2,1:nrvars) &
-            =   (3.0_r8*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
-              +         c(-1:mx(1)+2,-1:mx(2)+2,-1:cmx(3)    ,1:nrvars))/64.0_r8
+            =   (3.0*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
+              +      c(-1:mx(1)+2,-1:mx(2)+2,-1:cmx(3)    ,1:nrvars))/64.0
     presult(-1:mx(1)+2,-1:mx(2)+2, 0: mx(3)+2:2,1:nrvars) &
-            =   (3.0_r8*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
-              +         c(-1:mx(1)+2,-1:mx(2)+2, 1:cmx(3)+2  ,1:nrvars))/64.0_r8
+            =   (3.0*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
+              +      c(-1:mx(1)+2,-1:mx(2)+2, 1:cmx(3)+2  ,1:nrvars))/64.0
     !
   end function TriLinProlongationP2
   ! ---------------------------------------------------------------------------
@@ -593,25 +592,25 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(0:,0:,0:,1:), intent(in) :: a
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0:(size(a,2)-2)*2+1, &
-                             0:(size(a,3)-2)*2+1, &
-                             1: size(a,4)) :: presult
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0: size(a,2)-2   +1, &
-                             0: size(a,3)-2   +1, &
-                             1: size(a,4)       ) :: b
-    real(kind=r8), dimension(0:(size(a,1)-2)*2+1, &
-                             0:(size(a,2)-2)*2+1, &
-                             0: size(a,3)-2   +1, &
-                             1: size(a,4)       ) :: c
-    real(kind=r8), dimension(1: size(a,1)-2     , &
-                             1: size(a,2)-2     , &
-                             1: size(a,3)-2     , &
-                             1: size(a,4)       ) :: cor
-    integer, dimension(1:3) :: cmx, mx
-    integer :: nrvars
+    real, dimension(0:,0:,0:,1:), intent(in) :: a
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0:(size(a,2)-2)*2+1, &
+                    0:(size(a,3)-2)*2+1, &
+                    1: size(a,4)) :: presult
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0: size(a,2)-2   +1, &
+                    0: size(a,3)-2   +1, &
+                    1: size(a,4)       ) :: b
+    real, dimension(0:(size(a,1)-2)*2+1, &
+                    0:(size(a,2)-2)*2+1, &
+                    0: size(a,3)-2   +1, &
+                    1: size(a,4)       ) :: c
+    real, dimension(1: size(a,1)-2     , &
+                    1: size(a,2)-2     , &
+                    1: size(a,3)-2     , &
+                    1: size(a,4)       ) :: cor
+    integer, dimension(1:3)              :: cmx, mx
+    integer                              :: nrvars
     !
     cmx(1) = size(a,1)-2
     cmx(2) = size(a,2)-2
@@ -623,40 +622,40 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(0:mx(1)  :2,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-      =   3.0_r8*a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-        +        a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =   3.0*a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
+        +     a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     b(1:mx(1)+1:2,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-      =          a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
-        + 3.0_r8*a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =       a(0:cmx(1)  ,0:cmx(2)+1,0:cmx(3)+1,1:nrvars) &
+        + 3.0*a(1:cmx(1)+1,0:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     c(0:mx(1)+1,0:mx(2)  :2,0:cmx(3)+1,1:nrvars) &
-      =   3.0_r8*b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
-        +        b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =   3.0*b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
+        +     b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     c(0:mx(1)+1,1:mx(2)+1:2,0:cmx(3)+1,1:nrvars) &
-      =          b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
-        + 3.0_r8*b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
+      =       b(0:mx(1)+1,0:cmx(2)  ,0:cmx(3)+1,1:nrvars) &
+        + 3.0*b(0:mx(1)+1,1:cmx(2)+1,0:cmx(3)+1,1:nrvars)
     !
     ! Linear interpolation in the z-direction third:
     presult(0:mx(1)+1,0:mx(2)+1,0:mx(3)  :2,1:nrvars) &
-            =   (3.0_r8*c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
-              +         c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0_r8
+            =   (3.0*c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
+              +      c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0
     presult(0:mx(1)+1,0:mx(2)+1,1:mx(3)+1:2,1:nrvars) &
-            =   (       c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
-              +  3.0_r8*c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0_r8
+            =   (    c(0:mx(1)+1,0:mx(2)+1,0:cmx(3)  ,1:nrvars) &
+              +  3.0*c(0:mx(1)+1,0:mx(2)+1,1:cmx(3)+1,1:nrvars))/64.0
     !
     ! The mass correction is computed only for regular cells, not for ghost
     ! cells.  Compute mass correction:
     cor(1:cmx(1),1:cmx(2),1:cmx(3),1:nrvars) &
         = a(1:cmx(1),1:cmx(2),1:cmx(3),1:nrvars) &
-            - 0.125_r8*(presult(2:mx(1)  :2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
-            +           presult(2:mx(1)  :2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
-            +           presult(2:mx(1)  :2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
-            +           presult(2:mx(1)  :2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars))
+            - 0.125*(presult(2:mx(1)  :2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
+            +        presult(2:mx(1)  :2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
+            +        presult(2:mx(1)  :2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
+            +        presult(2:mx(1)  :2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars))
     !
     ! Add the mass correction:
     presult(2: mx(1)  :2,2: mx(2)  :2,2: mx(3)  :2,1:nrvars) &
@@ -693,25 +692,25 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(-1:,-1:,-1:,1:), intent(in) :: a
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1:(size(a,2)-4)*2+2, &
-                             -1:(size(a,3)-4)*2+2, &
-                              1: size(a,4)       ) :: presult
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1: size(a,2)-4   +2, &
-                             -1: size(a,3)-4   +2, &
-                              1: size(a,4)       ) :: b
-    real(kind=r8), dimension(-1:(size(a,1)-4)*2+2, &
-                             -1:(size(a,2)-4)*2+2, &
-                             -1: size(a,3)-4   +2, &
-                              1: size(a,4)       ) :: c
-    real(kind=r8), dimension( 1: size(a,1)-4     , &
-                              1: size(a,2)-4     , &
-                              1: size(a,3)-4     , &
-                              1: size(a,4)       ) :: cor
-    integer, dimension(1:3) :: cmx, mx
-    integer :: nrvars
+    real, dimension(-1:,-1:,-1:,1:), intent(in) :: a
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1:(size(a,2)-4)*2+2, &
+                    -1:(size(a,3)-4)*2+2, &
+                     1: size(a,4)       ) :: presult
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1: size(a,2)-4   +2, &
+                    -1: size(a,3)-4   +2, &
+                     1: size(a,4)       ) :: b
+    real, dimension(-1:(size(a,1)-4)*2+2, &
+                    -1:(size(a,2)-4)*2+2, &
+                    -1: size(a,3)-4   +2, &
+                     1: size(a,4)       ) :: c
+    real, dimension( 1: size(a,1)-4     , &
+                     1: size(a,2)-4     , &
+                     1: size(a,3)-4     , &
+                     1: size(a,4)       ) :: cor
+    integer, dimension(1:3)               :: cmx, mx
+    integer                               :: nrvars
     !
     cmx(1) = size(a,1)-4
     cmx(2) = size(a,2)-4
@@ -721,42 +720,42 @@ contains
     !
     ! Linear interpolation in the x-direction first:
     b(-1: mx(1)+1:2,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-        +        a(-1:cmx(1)    ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
+        +     a(-1:cmx(1)    ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
     !
     b( 0: mx(1)+2:2,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
-        +        a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*a( 0:cmx(1)+1  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars) &
+        +     a( 1:cmx(1)+2  ,-1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
     !
     ! Linear interpolation in the y-direction second:
     c(-1: mx(1)+2  ,-1: mx(2)+1:2,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
-        +        b(-1: mx(1)+2  ,-1:cmx(2)    ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
+        +     b(-1: mx(1)+2  ,-1:cmx(2)    ,-1:cmx(3)+2,1:nrvars)
     !
     c(-1: mx(1)+2  , 0: mx(2)+2:2,-1:cmx(3)+2,1:nrvars) &
-      =   3.0_r8*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
-        +        b(-1: mx(1)+2  , 1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
+      =   3.0*b(-1: mx(1)+2  , 0:cmx(2)+1  ,-1:cmx(3)+2,1:nrvars) &
+        +     b(-1: mx(1)+2  , 1:cmx(2)+2  ,-1:cmx(3)+2,1:nrvars)
     !
     ! Linear interpolation in the z-direction third:
     presult(-1:mx(1)+2,-1:mx(2)+2,-1: mx(3)+1:2,1:nrvars) &
-            =   (3.0_r8*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
-              +         c(-1:mx(1)+2,-1:mx(2)+2,-1:cmx(3)    ,1:nrvars))/64.0_r8
+            =   (3.0*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
+              +      c(-1:mx(1)+2,-1:mx(2)+2,-1:cmx(3)    ,1:nrvars))/64.0
     presult(-1:mx(1)+2,-1:mx(2)+2, 0: mx(3)+2:2,1:nrvars) &
-            =   (3.0_r8*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
-              +         c(-1:mx(1)+2,-1:mx(2)+2, 1:cmx(3)+2  ,1:nrvars))/64.0_r8
+            =   (3.0*c(-1:mx(1)+2,-1:mx(2)+2, 0:cmx(3)+1  ,1:nrvars) &
+              +      c(-1:mx(1)+2,-1:mx(2)+2, 1:cmx(3)+2  ,1:nrvars))/64.0
     !
     ! The mass correction is computed only for regular cells, not for ghost
     ! cells.  Compute mass correction:
     cor(1:cmx(1),1:cmx(2),1:cmx(3),1:nrvars) &
         = a(1:cmx(1),1:cmx(2),1:cmx(3),1:nrvars) &
-            - 0.125_r8*(presult(2:mx(1)  :2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
-            +           presult(2:mx(1)  :2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
-            +           presult(2:mx(1)  :2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
-            +           presult(2:mx(1)  :2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars) &
-            +           presult(1:mx(1)-1:2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars))
+            - 0.125*(presult(2:mx(1)  :2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,2:mx(2)  :2,2:mx(3)  :2,1:nrvars) &
+            +        presult(2:mx(1)  :2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,1:mx(2)-1:2,2:mx(3)  :2,1:nrvars) &
+            +        presult(2:mx(1)  :2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,2:mx(2)  :2,1:mx(3)-1:2,1:nrvars) &
+            +        presult(2:mx(1)  :2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars) &
+            +        presult(1:mx(1)-1:2,1:mx(2)-1:2,1:mx(3)-1:2,1:nrvars))
     !
     ! Add the mass correction:
     presult(2: mx(1)  :2,2: mx(2)  :2,2: mx(3)  :2,1:nrvars) &

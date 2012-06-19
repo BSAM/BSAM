@@ -58,11 +58,11 @@ contains
     use BSAMStorage,     only: DeallocPeriodicBCStorage
     use BSAMInputOutput, only: ReadQ
     implicit none
-    type(funcparam) :: dummy
-    character(len=5) :: zone
-    character(len=8) :: date
-    character(len=10) :: time
-    integer :: ierror, level, ilevel
+    type(funcparam)         :: dummy
+    character(len=5)        :: zone
+    character(len=8)        :: date
+    character(len=10)       :: time
+    integer                 :: ierror, level, ilevel
     integer, dimension(1:8) :: values
     !
     namelist /rundata/ dt, errortype, getafterstepstats, maxvcycles,          &
@@ -177,8 +177,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     MarkNodeToBeDeleted = err_ok
@@ -191,8 +190,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     MarkNodeOld = err_ok
@@ -208,15 +206,13 @@ contains
     use Boundary, only: PeriodicSetup
     use BSAMStorage, only: AllocFields
     implicit none
-    !
-    type(nodeinfo) :: rootinfo
-    type(funcparam) :: dummy
-    !
-    integer :: i, ierror, maux, mbc, nrvars
-    integer, dimension(1:maxdims) :: mx,mxtmp
-    integer, dimension(1:2*maxdims) :: mthbc
+    type(nodeinfo)                    :: rootinfo
+    type(funcparam)                   :: dummy
+    integer                           :: i, ierror, maux, mbc, nrvars
+    integer, dimension(1:maxdims)     :: mx,mxtmp
+    integer, dimension(1:2*maxdims)   :: mthbc
     integer, dimension(1:maxdims,1:2) :: mglobal
-    real(kind=r8), dimension(1:maxdims) :: dx, xlower, xupper
+    real, dimension(1:maxdims)        :: dx, xlower, xupper
     !
     namelist /griddata/ desiredfillratios, errflagopt, ibuffer, maxlevel, &
                         maux, mbc, mglobal, minimumgridpoints, minlevel, &
@@ -363,7 +359,7 @@ contains
     end do
     !
     dx = 0.0
-    dx(1:ndims) = (xupper(1:ndims)-xlower(1:ndims))/real(mx(1:ndims),kind=r8)
+    dx(1:ndims) = (xupper(1:ndims)-xlower(1:ndims))/real(mx(1:ndims))
     !
     do i = 2, ndims
       if (abs(dx(1)-dx(i))>1.0E-10) then
@@ -430,12 +426,10 @@ contains
     use TreeOps, only: err_ok, GetChildInfo
     use BSAMStorage, only: AllocFields
     implicit none
-    !
-    type(nodeinfo) :: seedinfo
-    type(funcparam) :: dummy
-    !
+    type(nodeinfo)          :: seedinfo
+    type(funcparam)         :: dummy
     type(nodeinfo), pointer :: child
-    integer :: ierror, level, mbc, nrvars
+    integer                 :: ierror, level, mbc, nrvars
     !
     ! Only data needed for multigrid need be copied from the child grid.  Parent
     ! (seedinfo) is born from child:
@@ -459,8 +453,8 @@ contains
       stop
     end if
     !
-    seedinfo%mx(1:ndims) = child%mx(1:ndims)/2
-    seedinfo%dx(1:ndims) = child%dx(1:ndims)*real(2,kind=r8)
+    seedinfo%mx(1:ndims) = child%mx(1:ndims)/2.0
+    seedinfo%dx(1:ndims) = child%dx(1:ndims)*2.0
     seedinfo%mglobal(1:ndims,1) = 1
     seedinfo%mglobal(1:ndims,2) = child%mglobal(1:ndims,2)/2
     child%mbounds(1:ndims,1) = 1
@@ -502,8 +496,7 @@ contains
     use TreeOps, only: err_ok
     use Problem, only: SetAux
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     SetAuxFields = err_ok
@@ -518,8 +511,7 @@ contains
     use TreeOps, only: err_ok
     use Problem, only: SetSrc
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     SetSrcFields = err_ok
@@ -533,8 +525,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     Initialq = err_ok
@@ -548,11 +539,11 @@ contains
     use NodeInfoDef
     use Problem, only: QInit2D, QInit3D
     implicit none
-    type(nodeinfo) :: info
-    integer :: nrvars
+    type(nodeinfo)                :: info
+    integer                       :: nrvars
     integer, dimension(1:maxdims) :: mx
-    real :: h
-    real, dimension(1:maxdims) :: xlower
+    real                          :: h
+    real, dimension(1:maxdims)    :: xlower
     !
     nrvars = info%nrvars
     mx(1:ndims) = info%mx(1:ndims)
@@ -574,8 +565,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     CopyQToQold = err_ok
@@ -605,9 +595,9 @@ contains
     use AFASRoutines, only: FillDown, MultigridIterations
     implicit none
     type(funcparam) :: dummy
-    logical       :: firstamr
-    integer       :: firstframe, it, itperprint, lastframe, level, n
-    real(kind=r8) :: starttime, dtsave
+    logical         :: firstamr
+    integer         :: firstframe, it, itperprint, lastframe, level, n
+    real            :: starttime, dtsave
     !
     dtsave = dt
     !
@@ -636,7 +626,7 @@ contains
     !
     starttime = currenttime
     finaltime = starttime &
-                + real((lastframe-firstframe+1)*itperprint,kind=r8)*dtsave
+                + real((lastframe-firstframe+1)*itperprint)*dtsave
     !
     firstamr = .true.
     !
@@ -733,7 +723,7 @@ contains
           call MultigridIterations
         enddo
         !
-        currenttime = starttime+real((n-firstframe)*itperprint+it,kind=r8)*dt
+        currenttime = starttime+real((n-firstframe)*itperprint+it)*dt
         !
         ! Mark all above-root-level grids old, set current time:
         do level = finestlevel, rootlevel, -1
@@ -803,8 +793,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     PrintGridInfo = err_ok
@@ -827,10 +816,8 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    !
+    type(nodeinfo)                :: info
+    type(funcparam)               :: dummy
     integer, dimension(1:maxdims) :: mx, cmx
     !
     GetMeshSize = err_ok
@@ -848,13 +835,13 @@ contains
   end function GetMeshSize
   ! ---------------------------------------------------------------------------
   subroutine ResetGrids
-    use NodeInfoDef
-    use TreeOps, only: ApplyOnLevel, DeleteMarkedNode
-    implicit none
     !
     ! All grids on level>rootlevel are destroyed.
     !
-    integer level
+    use NodeInfoDef
+    use TreeOps, only: ApplyOnLevel, DeleteMarkedNode
+    implicit none
+    integer         :: level
     type(funcparam) :: dummy
     !
     do level = finestlevel, rootlevel+1, -1
@@ -868,8 +855,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     MarkNode = err_ok
@@ -883,8 +869,7 @@ contains
     use TreeOps, only: err_ok
     use BSAMStorage, only: DeAllocFields
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     ReleaseOldFields = err_ok
@@ -897,8 +882,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     SetCurrentTime = err_ok
@@ -912,14 +896,14 @@ contains
     use TreeOps, only: err_ok, GetParentInfo
     use Problem, only: AfterStep2D, AfterStep3D
     implicit none
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    type(nodeinfo), pointer :: parent
-    integer :: ierror, level, nrvars
-    integer, dimension(1:maxdims) :: mx
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
+    type(nodeinfo), pointer           :: parent
+    integer                           :: ierror, level, nrvars
+    integer, dimension(1:maxdims)     :: mx
     integer, dimension(1:maxdims,1:2) :: mb
-    real(kind=r8) :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    real                              :: h
+    real, dimension(1:maxdims)        :: xlower
     !
     AfterStepStatistics = err_ok
     if (info%tobedeleted) return
@@ -958,7 +942,6 @@ contains
     use TreeOps, only: ExistLevel
     use Boundary, only: SetGhost
     implicit none
-    !
     integer, intent(in) :: level
     !
     ! Fill in the ghost points:
@@ -984,10 +967,8 @@ contains
     use AFASRoutines, only: RestrictSolution, RelativeTruncationError
     use Boundary, only: SetGhost, GetCoarseGhostPoints
     implicit none
-    !
     integer, intent(in) :: level
-    !
-    type(funcparam) :: dummy
+    type(funcparam)     :: dummy
     !
     ! 1) Calculate the relative truncation error:
     call ApplyOnLevel(level,RestrictSolution,dummy)
@@ -1025,11 +1006,9 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
-    !
-    type(nodeinfo) :: coarseinfo
+    type(nodeinfo)  :: coarseinfo
     !
     EstimateError = err_ok
     if (info%tobedeleted) return
@@ -1042,15 +1021,13 @@ contains
     use NodeInfoDef
     use Problem, only: SetErrFlagsUser2D, SetErrFlagsUser3D
     implicit none
-    !
-    type(nodeinfo) :: info
-    type(nodeinfo) :: coarseinfo
-    !
-    integer :: level, nrvars
-    integer, dimension(1:maxdims) :: mx, cmx
+    type(nodeinfo)                    :: info
+    type(nodeinfo)                    :: coarseinfo
+    integer                           :: level, nrvars
+    integer, dimension(1:maxdims)     :: mx, cmx
     integer, dimension(1:maxdims,1:2) :: mglobal
-    real(kind=r8) :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    real                              :: h
+    real, dimension(1:maxdims)        :: xlower
     !
     nrvars = info%nrvars
     level = info%level
@@ -1117,17 +1094,15 @@ contains
   subroutine SetErrFlags2D(qrte,errorflags,mx,cmx,nrvars,h,level)
     use NodeInfoDef
     implicit none
-    !
-    real(kind=r8), dimension(1:,1:,1:), intent(in) :: qrte
+    real, dimension(1:,1:,1:), intent(in)  :: qrte
     integer, dimension(1:,1:), intent(out) :: errorflags
-    integer, dimension(1:2), intent(in) :: mx
-    integer, dimension(1:2), intent(in) :: cmx
-    integer, intent(in) :: nrvars
-    real(kind=r8), intent(in) :: h
-    integer, intent(in) :: level
-    !
+    integer, dimension(1:2),   intent(in)  :: mx
+    integer, dimension(1:2),   intent(in)  :: cmx
+    integer,                   intent(in)  :: nrvars
+    real,                      intent(in)  :: h
+    integer,                   intent(in)  :: level
     integer :: i, j
-    real(kind=r8) :: tol
+    real    :: tol
     !
     tol = qtolerance(level)/h/h
     !
@@ -1149,17 +1124,15 @@ contains
   subroutine SetErrFlags3D(qrte,errorflags,mx,cmx,nrvars,h,level)
     use NodeInfoDef
     implicit none
-    !
-    real(kind=r8), dimension(1:,1:,1:,1:), intent(in) :: qrte
+    real, dimension(1:,1:,1:,1:), intent(in)  :: qrte
     integer, dimension(1:,1:,1:), intent(out) :: errorflags
-    integer, dimension(1:3), intent(in) :: mx
-    integer, dimension(1:3), intent(in) :: cmx
-    integer, intent(in) :: nrvars
-    real(kind=r8), intent(in) :: h
-    integer, intent(in) :: level
-    !
+    integer, dimension(1:3),      intent(in)  :: mx
+    integer, dimension(1:3),      intent(in)  :: cmx
+    integer,                      intent(in)  :: nrvars
+    real,                         intent(in)  :: h
+    integer,                      intent(in)  :: level
     integer :: i, j, k
-    real(kind=r8) :: tol
+    real    :: tol
     !
     tol = qtolerance(level)/h/h/h
     !
@@ -1187,16 +1160,14 @@ contains
   subroutine BufferAndList(errorflags,mglobal,mx,level)
     use NodeInfoDef
     implicit none
-    !
     integer, dimension(1:,1:,1:), intent(in out) :: errorflags
-    integer, dimension(1:3,1:2), intent(in) :: mglobal
-    integer, dimension(1:3), intent(in) :: mx
-    integer, intent(in) :: level
-    !
-    integer :: i, j, k
-    integer, dimension(1:3) :: index
-    integer, dimension(1:3,1:2) :: mtg
-    integer, dimension(1:mx(1),1:mx(2),1:mx(3)) :: errorflagstmp
+    integer, dimension(1:3,1:2),  intent(in)     :: mglobal
+    integer, dimension(1:3),      intent(in)     :: mx
+    integer,                      intent(in)     :: level
+    integer                                      :: i, j, k
+    integer, dimension(1:3)                      :: index
+    integer, dimension(1:3,1:2)                  :: mtg
+    integer, dimension(1:mx(1),1:mx(2),1:mx(3))  :: errorflagstmp
     !
     errorflagstmp = errorflags
     mtg = 1
@@ -1240,12 +1211,10 @@ contains
     use TreeOps, only: ApplyOnLevel
     use Boundary, only: GetPeriodicTagOffset
     implicit none
-    !
-    integer, intent(in) :: level
-    !
-    type(funcparam) :: dummy
-    logical :: periodicbuffer
-    integer :: i
+    integer, intent(in)           :: level
+    type(funcparam)               :: dummy
+    logical                       :: periodicbuffer
+    integer                       :: i
     integer, dimension(1:maxdims) :: coordinate
     !
     currenttaggedcell => lasttaggedcell
@@ -1276,12 +1245,10 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    !
-    integer :: ibuff, level, n
-    integer, dimension(1:maxdims) :: mx
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
+    integer                           :: ibuff, level, n
+    integer, dimension(1:maxdims)     :: mx
     integer, dimension(1:maxdims,1:2) :: mglobal, mglobaltag, mlocal, moverlap
     !
     BufferTaggedCells = err_ok
@@ -1331,16 +1298,15 @@ contains
   end subroutine DeleteTaggedCellsList
   ! ---------------------------------------------------------------------------
   subroutine GridAdapt(level)
+    !
+    ! Generate new subgrids of level
+    !
     use NodeInfoDef
     use TreeOps, only: ApplyOnLevel, ApplyOnLevelPairs, DeleteMarkedNode
     implicit none
-    !
     integer, intent(in) :: level
-    !
-    ! Generate new subgrids of level:
-    !
-    type(funcparam) :: dummy
-    integer :: ilevel
+    type(funcparam)     :: dummy
+    integer             :: ilevel
     !
     ! Generate new grids in accordance with error flags:
     call ApplyOnLevel(level,RefineGrid,dummy)
@@ -1370,10 +1336,8 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    !
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
     integer, dimension(1:maxdims,1:2) :: mbounds
     !
     RefineGrid = err_ok
@@ -1387,24 +1351,23 @@ contains
   end function RefineGrid
   ! ---------------------------------------------------------------------------
   subroutine NewSubGrids(info,mbounds)
+    !
+    ! Implementation of Berger-Rigoutsos algorithm
+    ! Ref: (IEEE Trans. Systems, Man & Cyber., 21(5):1278-1286, 1991)
+    !
     use NodeInfoDef
     implicit none
-    !
-    ! Implementation of Berger-Rigoutsos algorithm (IEEE Trans. Systems, Man &
-    ! Cyber., 21(5):1278-1286, 1991:
-    !
-    type(nodeinfo) :: info
-    integer, dimension(1:maxdims,1:2), intent(in out) :: mbounds
-    !
-    logical :: havesplit
-    logical, dimension(1:maxsubgrids) :: cansplit
-    integer, parameter :: maxsplitpasses = 15
-    integer :: del, dist0, dist1, i, i1, i2, ierror, igrid, inflect, &
-               level, maxm, mgp, minm, n, ngrid, npass
-    integer, dimension(1:maxdims) :: isplit, mx
-    integer, dimension(1:maxdims,1:2,1:maxsubgrids) :: msubbounds
-    integer, dimension(:,:), allocatable :: signature ,ddsignature
-    real(kind=r8) :: fillratio, desfillratio
+    type(nodeinfo),                    intent(in)    :: info
+    integer, dimension(1:maxdims,1:2), intent(inout) :: mbounds
+    logical                                          :: havesplit
+    logical, dimension(1:maxsubgrids)                :: cansplit
+    integer, parameter                               :: maxsplitpasses = 15
+    integer, dimension(1:maxdims)                    :: isplit, mx
+    integer, dimension(1:maxdims,1:2,1:maxsubgrids)  :: msubbounds
+    integer, dimension(:,:), allocatable             :: signature ,ddsignature
+    integer :: del, dist0, dist1, i, i1, i2, ierror, igrid, inflect
+    integer :: level, maxm, mgp, minm, n, ngrid, npass
+    real    :: fillratio, desfillratio
     !
     mx = info%mx
     level = info%level
@@ -1568,14 +1531,12 @@ contains
   function GetSignatures(errorflags,msubbounds,maxm) result(gsresult)
     use NodeInfoDef
     implicit none
-    !
-    integer, dimension(1:,1:,1:), intent(in) :: errorflags
+    integer, dimension(1:,1:,1:),      intent(in) :: errorflags
     integer, dimension(1:maxdims,1:2), intent(in) :: msubbounds
-    integer, intent(in) :: maxm
-    integer, dimension(1:maxm,1:ndims) :: gsresult
-    !
-    integer :: i, n
-    integer, dimension(1:maxdims) :: i1, i2
+    integer,                           intent(in) :: maxm
+    integer, dimension(1:maxm,1:ndims)            :: gsresult
+    integer                                       :: i, n
+    integer, dimension(1:maxdims)                 :: i1, i2
     !
     i1 = 1
     i2 = 1
@@ -1596,20 +1557,18 @@ contains
   function GridFlagRatio(errorflags,mbounds) result(gfrresult)
     use NodeInfoDef
     implicit none
-    !
-    integer, dimension(1:,1:,1:), intent(in) :: errorflags
+    integer, dimension(1:,1:,1:),      intent(in)     :: errorflags
     integer, dimension(1:maxdims,1:2), intent(in out) :: mbounds
-    real(kind=r8) :: gfrresult
+    real :: gfrresult
+    real :: flagged, total
     !
-    real(kind=r8) :: flagged, total
-    !
-    total = real(product(mbounds(1:ndims,2)-mbounds(1:ndims,1)+1),kind=r8)
+    total = real(product(mbounds(1:ndims,2)-mbounds(1:ndims,1)+1))
     !
     mbounds(ndims+1:maxdims,1:2) = 1
     !
     flagged = real(sum(errorflags(mbounds(1,1):mbounds(1,2), &
               mbounds(2,1):mbounds(2,2), &
-              mbounds(3,1):mbounds(3,2))),kind=r8)
+              mbounds(3,1):mbounds(3,2))))
     !
     if (flagged<-1.0e-08) then
       print *, 'Error in GridFlagRatio: flagged < 0.'
@@ -1621,20 +1580,19 @@ contains
   end function GridFlagRatio
   ! ---------------------------------------------------------------------------
   subroutine MakeNewGrid(parent,mbounds)
+    !
+    ! Generate a new, finer grid within mbounds of the grid info
+    !
     use NodeInfoDef
     use TreeOps, only: CreateChild, GetChildInfo
     use BSAMStorage, only: AllocFields
     implicit none
-    !
-    type(nodeinfo) :: parent
+    type(nodeinfo)                                :: parent
     integer, dimension(1:maxdims,1:2), intent(in) :: mbounds
-    !
-    ! Generate a new, finer grid within mbounds of the grid info:
-    !
-    type(nodeinfo), pointer :: child
-    integer :: ierror, n, nb
-    integer, dimension(1:maxdims,1:2) :: mglobalbounds
-    real(kind=r8) :: rand
+    type(nodeinfo), pointer                       :: child
+    integer                                       :: ierror, n, nb
+    integer, dimension(1:maxdims,1:2)             :: mglobalbounds
+    real                                          :: rand
     !
     ! Create a child of the currentnode:
     call CreateChild
@@ -1710,12 +1668,12 @@ contains
     !
     child%xlower = 0.0
     child%xupper = 0.0
-    child%xlower(1:ndims) = real(mbounds(1:ndims,1)-1,kind=r8) &
+    child%xlower(1:ndims) = real(mbounds(1:ndims,1)-1) &
                             * parent%dx(1:ndims) + parent%xlower(1:ndims)
-    child%xupper(1:ndims) = real(mbounds(1:ndims,2)  ,kind=r8) &
+    child%xupper(1:ndims) = real(mbounds(1:ndims,2)) &
                             * parent%dx(1:ndims) + parent%xlower(1:ndims)
     child%dx = 0.0
-    child%dx(1:ndims) = parent%dx(1:ndims)/real(2,kind=r8)
+    child%dx(1:ndims) = parent%dx(1:ndims)/2.0
     !
     ! Allocate dynamic space:
     call AllocFields(child,parent)
@@ -1726,18 +1684,17 @@ contains
   end subroutine MakeNewGrid
   ! ---------------------------------------------------------------------------
   subroutine InitFields(parent,child)
+    !
+    ! Redone to support only bilinear interpolation and 1st layer updating.
+    !
     use NodeInfoDef
     use Problem, only: SetAux, SetSrc
     use GridUtilities, only: BiLinProlongationP1MC,  BiLinProlongationP2MC, &
                              TriLinProlongationP1MC, TriLinProlongationP2MC
     implicit none
-    !
-    ! Redone to support only bilinear interpolation and 1st layer updating.
-    !
-    type(nodeinfo) :: parent, child
-    !
-    integer :: mbc, nrvars
-    integer, dimension(1:maxdims) :: cmx, mx
+    type(nodeinfo)                    :: parent, child
+    integer                           :: mbc, nrvars
+    integer, dimension(1:maxdims)     :: cmx, mx
     integer, dimension(1:maxdims,1:2) :: mb
     !
     nrvars = parent%nrvars
@@ -1816,14 +1773,14 @@ contains
   end subroutine InitFields
   ! ---------------------------------------------------------------------------
   integer function TransferValues(grid1,grid2,dummy)
+    !
+    ! Transfer values from previous grids on this level to newly created grids
+    !
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    !
-    type(nodeinfo) :: grid1, grid2
+    type(nodeinfo)  :: grid1, grid2
     type(funcparam) :: dummy
-    !
-    ! Transfer values from previous grids on this level to newly created grids:
     !
     TransferValues = err_ok
     !
@@ -1844,14 +1801,13 @@ contains
   end function TransferValues
   ! ---------------------------------------------------------------------------
   subroutine Transferq(sourceinfo,targetinfo)
-    use NodeInfoDef
-    implicit none
-    !
-    type(nodeinfo) :: sourceinfo
-    type(nodeinfo) :: targetinfo
     !
     ! Look for overlap and transfer grid values from source to target
     !
+    use NodeInfoDef
+    implicit none
+    type(nodeinfo)                    :: sourceinfo
+    type(nodeinfo)                    :: targetinfo
     integer, dimension(1:maxdims,1:2) :: mtarget, msource
     !
     if (.not. sourceinfo%fieldsallocated) then
@@ -1877,14 +1833,12 @@ contains
   subroutine TransferOverlap(msource,mtarget,sourceinfo,targetinfo)
     use NodeInfoDef
     implicit none
-    !
     integer, dimension(1:maxdims,1:2), intent(in) :: msource
     integer, dimension(1:maxdims,1:2), intent(in) :: mtarget
-    type(nodeinfo) :: sourceinfo
-    type(nodeinfo) :: targetinfo
-    !
-    integer :: n
-    integer, dimension(1:maxdims,1:2) :: moverlap, ms, mt
+    type(nodeinfo)                                :: sourceinfo
+    type(nodeinfo)                                :: targetinfo
+    integer                                       :: n
+    integer, dimension(1:maxdims,1:2)             :: moverlap, ms, mt
     !
     ! Transfer values from source to target in overlap region:
     ! 1. Find overlap region in global index space:

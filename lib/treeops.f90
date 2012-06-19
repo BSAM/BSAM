@@ -38,109 +38,105 @@
 !                   Additions Oct. 2006 Steven Wise
 ! -----------------------------------------------------------------------
 module TreeOps
+  !
   ! User definitions of data structures associated with each node
+  !
   use NodeInfoDef
   implicit none
   private
-  public :: InitForest,KillForest,AddRootLevelNode,          &
-            CreateChild,KillNode,DeleteMarkedNode,           &
-            ApplyOnLeaves,ApplyOnLevels,ApplyOnForest,       &
-            ApplyOnLevel,ApplyOnLevelPairs,ApplyOnChildren,  &
-            GetTreeOpsErrCode,GetNodeInfo,SetNodeInfo,       &
-            GetCurrentNode,GetNodeNo,GetChildInfo,           &
-            GetParentInfo,GetParent,GetSibling,GetChild,     &
-            GetLevel,GetSiblingIndex,GetNrOfChildren,        &
-            GetRootInfo,SetRootInfo,ExistLevel,              &
-            PushForest,PopForest,CreateBelowSeedLevels,      &
-            CurrentNodeToYoungest
+  !
+  public :: InitForest,KillForest,AddRootLevelNode
+  public :: CreateChild,KillNode,DeleteMarkedNode
+  public :: ApplyOnLeaves,ApplyOnLevels,ApplyOnForest
+  public :: ApplyOnLevel,ApplyOnLevelPairs,ApplyOnChildren
+  public :: GetTreeOpsErrCode,GetNodeInfo,SetNodeInfo
+  public :: GetCurrentNode,GetNodeNo,GetChildInfo
+  public :: GetParentInfo,GetParent,GetSibling,GetChild
+  public :: GetLevel,GetSiblingIndex,GetNrOfChildren
+  public :: GetRootInfo,SetRootInfo,ExistLevel
+  public :: PushForest,PopForest,CreateBelowSeedLevels
+  public :: CurrentNodeToYoungest
   !
   ! Error handling
   ! The most recent error code
   integer :: ErrCode
   !
   ! Error codes
-  public :: err_OK,                                          &
-            err_UndefinedNode,                               &
-            err_NoParent,err_NoSibling,err_NoChild
-  integer, parameter :: ErrPrint          = 1000
-  integer, parameter :: err_OK            =    0
-  integer, parameter :: err_UndefinedNode =  100
-  integer, parameter :: err_NoParent      =  201
-  integer, parameter :: err_NoSibling     =  202
-  integer, parameter :: err_NoChild       =  203
-  integer, parameter :: err_BadLevel      =  301
-  integer, parameter :: IntTrue=0
-  integer, parameter :: IntFalse=-1
+  integer, parameter         :: ErrPrint          = 1000
+  integer, parameter, public :: err_OK            =    0
+  integer, parameter, public :: err_UndefinedNode =  100
+  integer, parameter, public :: err_NoParent      =  201
+  integer, parameter, public :: err_NoSibling     =  202
+  integer, parameter, public :: err_NoChild       =  203
+  integer, parameter         :: err_BadLevel      =  301
+  integer, parameter         :: IntTrue=0
+  integer, parameter         :: IntFalse=-1
   !
   type, public :: Node
     private
-    type (NodeInfo), pointer :: Info
-    type (Node),     pointer :: Parent
-    ! Next elder sibling
-    type (Node),     pointer :: Sibling
-    type (Node),     pointer :: Child
-    ! Nodes not of this parent but
-    type (Node),     pointer :: Neighbor
+    type(NodeInfo), pointer :: Info
+    type(Node),     pointer :: Parent
+    type(Node),     pointer :: Sibling  ! Next elder sibling
+    type(Node),     pointer :: Child
+    type(Node),     pointer :: Neighbor ! Nodes not of this parent but
+    !
     ! on the same level
-    integer level                   ! This node's level
-    integer ChildNo                 ! Child's ordinal. Eldest=1, Next=2, ...
-    integer NrOfChildren
-    integer LeafDist                ! Distance from leaf
+    integer :: level         ! This node's level
+    integer :: ChildNo       ! Child's ordinal. Eldest=1, Next=2, ...
+    integer :: NrOfChildren
+    integer :: LeafDist      ! Distance from leaf
     !
     ! This is *not* maintained dynamically as nodes are created/destroyed
-    integer NodeNo                  ! Node number. Useful as ID in debugging
+    integer :: NodeNo        ! Node number. Useful as ID in debugging
   end type Node
   !
   type :: NodePointer
-    type (Node), pointer :: NodePtr
+    type(Node), pointer :: NodePtr
   end type NodePointer
   !
   type, public :: InfoPointer
-    type (NodeInfo), pointer :: InfoPtr
+    type(NodeInfo), pointer :: InfoPtr
   end type InfoPointer
   !
-  integer, parameter, public :: FOREST_SEED = -999
-  integer, parameter :: NO_CHILDREN = 0
-  integer, parameter :: FIRST_CHILD = 1
-  integer, parameter :: NOT_A_CHILD = 0
-  integer, parameter :: BAD_CHILD_NO = 0
-  integer, parameter :: ZERO_LEAF_NODE_DIST = 0
+  integer, parameter, public :: FOREST_SEED         = -999
+  integer, parameter         :: NO_CHILDREN         = 0
+  integer, parameter         :: FIRST_CHILD         = 1
+  integer, parameter         :: NOT_A_CHILD         = 0
+  integer, parameter         :: BAD_CHILD_NO        = 0
+  integer, parameter         :: ZERO_LEAF_NODE_DIST = 0
   !
-  logical, parameter :: NoInfoInit = .false.
-  logical, parameter :: PreEvalNext = .true.
+  logical, parameter :: NoInfoInit   = .false.
+  logical, parameter :: PreEvalNext  = .true.
   logical, parameter :: PostEvalNext = .false.
   !
   ! Global variables showing current state of tree traversal
-  type (Node), pointer, SAVE :: ForestSeed
-  type (Node), pointer, SAVE :: Root
-  type (Node), pointer, SAVE :: CurrentNode
-  type (NodePointer), dimension(-MaxDepth:MaxDepth) :: Stack
-  type (NodePointer), dimension(-MaxDepth:MaxDepth) :: YoungestOnLevel
-  type (NodePointer), dimension(-MaxDepth:MaxDepth) :: EldestOnLevel
-  integer, dimension(-MaxDepth:MaxDepth) :: NrOfNodes
-  integer CurrentLevel
-  integer GlobalNodeNo
+  type(Node), pointer, save                        :: ForestSeed
+  type(Node), pointer, save                        :: Root
+  type(Node), pointer, save                        :: CurrentNode
+  type(NodePointer), dimension(-MaxDepth:MaxDepth) :: Stack
+  type(NodePointer), dimension(-MaxDepth:MaxDepth) :: YoungestOnLevel
+  type(NodePointer), dimension(-MaxDepth:MaxDepth) :: EldestOnLevel
+  integer, dimension(-MaxDepth:MaxDepth)           :: NrOfNodes
+  integer                                          :: CurrentLevel
+  integer                                          :: GlobalNodeNo
   !
   ! Stack mechanism to allow nested tree traversals
   integer, parameter :: MaxForestStacks=32
-  integer, save :: StackLevel
-  type (NodePointer), save, dimension(0:MaxForestStacks) :: ForestStack
+  integer, save      :: StackLevel
+  type(NodePointer), save, dimension(0:MaxForestStacks) :: ForestStack
   !
   ! Global I/O variables
-  integer InputUnit,OutputUnit
-  !
-  ! Global variables showing memory usage
-  integer, parameter :: iPrec = selected_int_kind(9)
-  !integer (kind=iPrec) :: MemFree, MemAllocated
+  integer :: InputUnit,OutputUnit
   !
 contains
   ! ---------------------------------------------------------------------------
   ! Interface routines are defined first
   ! ---------------------------------------------------------------------------
   subroutine InitForest(InfoInit)
+    implicit none
     logical, intent(in), optional :: InfoInit
-    integer :: iError
-    integer :: L
+    integer                       :: iError
+    integer                       :: L
     !
     allocate (Root,ForestSeed,STAT=iError)
     if (iError /= 0) then
@@ -191,9 +187,10 @@ contains
   end subroutine InitForest
   ! ---------------------------------------------------------------------------
   subroutine CreateBelowSeedLevels(MinLevel,InfoInit)
-    integer, intent(in) :: MinLevel
+    implicit none
+    integer, intent(in)           :: MinLevel
     logical, intent(in), optional :: InfoInit
-    integer :: iError
+    integer                       :: iError
     !
     if (MinLevel<-MaxDepth) then
       print *,"Error MinLevel less than MaxDepth in CreateBelowSeedLevels."
@@ -227,12 +224,11 @@ contains
   end subroutine CreateBelowSeedLevels
   ! ---------------------------------------------------------------------------
   recursive subroutine CreateBelowSeedLevelNode(MinLevel,InfoInit)
-    ! Interface declarations
-    integer, intent(in) :: MinLevel
+    implicit none
+    integer, intent(in)           :: MinLevel
     logical, intent(in), optional :: InfoInit
-    ! Internal declarations
-    type (Node), pointer :: BelowSeedNode
-    integer :: iError, BelowSeedLevel
+    type(Node), pointer           :: BelowSeedNode
+    integer                       :: iError, BelowSeedLevel
     !
     ! There are only one of these grids at each level below the root.
     ! Current node is assumed to be root node or lower.
@@ -289,14 +285,16 @@ contains
   end subroutine CreateBelowSeedLevelNode
   ! ---------------------------------------------------------------------------
   subroutine KillForest
+    implicit none
+    !
     call KillNode(Root)
   end subroutine KillForest
   ! ---------------------------------------------------------------------------
   subroutine AddRootLevelNode(InfoInit)
+    implicit none
     logical, intent(in), optional :: InfoInit
-    ! Internal declarations
-    type (Node), pointer :: NewRootLevelNode
-    integer :: iError
+    type(Node), pointer           :: NewRootLevelNode
+    integer                       :: iError
     !
     allocate (NewRootLevelNode,STAT=iError)
     if (iError /= 0) then
@@ -335,13 +333,12 @@ contains
   end subroutine AddRootLevelNode
   ! ---------------------------------------------------------------------------
   subroutine CreateChild(InfoInit,ReadMode)
-    ! Interface declarations
+    implicit none
     logical, intent(in), optional :: InfoInit
     logical, intent(in), optional :: ReadMode
-    ! Internal declarations
-    logical UpdateYoungest
-    type (Node), pointer :: NewNode
-    integer :: iError,ThisLevel
+    logical                       :: UpdateYoungest
+    type(Node), pointer           :: NewNode
+    integer                       :: iError,ThisLevel
     !
     allocate(NewNode,STAT=iError)
     if (iError /= err_OK) then
@@ -431,12 +428,12 @@ contains
   ! Kill aNode and all of its children
   ! ---------------------------------------------------------------------------
   recursive subroutine KillNode(aNode)
-    ! Interface declarations
-    type (Node), pointer :: aNode
-    ! Internal declarations
-    type (Node), pointer :: Child,Sibling,Prev
-    logical NeighborUpdated
-    integer :: iError,ThisLevel
+    implicit none
+    type(Node), pointer :: aNode
+    type(Node), pointer :: Child,Sibling,Prev
+    logical             :: NeighborUpdated
+    integer             :: iError,ThisLevel
+    !
     ! If aNode has children kill those first
     Child => aNode%Child
     do
@@ -474,7 +471,7 @@ contains
     end if
     ! Was it the start of the Neighbor list?
     if ((.not. NeighborUpdated) .and. &
-        (associated(aNode,YoungestOnLevel(ThisLevel)%NodePtr))) then
+      (associated(aNode,YoungestOnLevel(ThisLevel)%NodePtr))) then
       ! Set the start of the list to the next node on this level
       YoungestOnLevel(ThisLevel)%NodePtr => &
                       YoungestOnLevel(ThisLevel)%NodePtr%Neighbor
@@ -489,7 +486,7 @@ contains
     end if
     ! Was it the end of the Neighbor stack?
     if ((.not. NeighborUpdated) .and. &
-        (associated(aNode,EldestOnLevel(ThisLevel)%NodePtr))) then
+      (associated(aNode,EldestOnLevel(ThisLevel)%NodePtr))) then
       nullify(Prev%Neighbor)
       EldestOnLevel(ThisLevel)%NodePtr => Prev
       NeighborUpdated = .true.
@@ -512,7 +509,7 @@ contains
   ! ---------------------------------------------------------------------------
   integer function DeleteMarkedNode(info,dummy)
     implicit none
-    type(nodeinfo) :: info
+    type(nodeinfo)  :: info
     type(funcparam) :: dummy
     !
     DeleteMarkedNode = err_ok
@@ -534,17 +531,18 @@ contains
   ! ---------------------------------------------------------------------------
   subroutine ApplyOnLevel(level,f,fparam)
     implicit none
-    integer :: level
     interface
       integer function f(info,param)
         use NodeInfoDef
-        type(nodeinfo) :: info
+        implicit none
+        type(nodeinfo)  :: info
         type(funcparam) :: param
       end function f
     end interface
-    type(funcparam) :: fparam
-    type(node), pointer :: nextnode
-    integer :: ferrcode
+    integer,         intent(in) :: level
+    type(funcparam), intent(in) :: fparam
+    type(node), pointer         :: nextnode
+    integer                     :: ferrcode
     !
     if (abs(level)>maxdepth) then
       print *,'Error in ApplyOnLevel. Maximum tree depth exceeded.'
@@ -561,7 +559,7 @@ contains
       if (ferrcode/=err_ok) then
         errcode = ferrcode
         if (ferrcode<errprint) print *, 'Error in ApplyOnLevel. ferrcode=', &
-            ferrcode
+          ferrcode
         return
       end if
       currentnode => nextnode
@@ -570,20 +568,19 @@ contains
   end subroutine ApplyOnLevel
   ! ---------------------------------------------------------------------------
   subroutine ApplyOnLevelPairs(L,f,fparam)
-    ! Interface declarations
-    integer L
+    implicit none
     interface
       integer function f(Info1,Info2,Param)
         use NodeInfoDef
-        ! Interface declarations
-        type (NodeInfo) :: Info1,Info2
-        type (FuncParam) :: Param
+        implicit none
+        type(NodeInfo)  :: Info1,Info2
+        type(FuncParam) :: Param
       end function f
     end interface
-    type (FuncParam) :: fparam
-    ! Internal declarations
-    type (Node), pointer :: Node1,Node2
-    integer fErrCode
+    integer,         intent(in) :: L
+    type(FuncParam), intent(in) :: fparam
+    type(Node), pointer         :: Node1,Node2
+    integer                     :: fErrCode
     !
     if (abs(L) > MaxDepth) then
       print *,'Error in ApplyOnLevelPairs. Maximum tree depth exceeded.'
@@ -599,7 +596,7 @@ contains
         if (fErrCode /= err_OK) then
           ErrCode = fErrCode
           if (fErrCode<ErrPrint ) &
-                print *, 'Error in ApplyOnLevelPairs. fErrCode=',fErrCode
+            print *, 'Error in ApplyOnLevelPairs. fErrCode=',fErrCode
           return
         end if
         Node2=>Node2%Neighbor
@@ -609,17 +606,19 @@ contains
   end subroutine ApplyOnLevelPairs
   ! ---------------------------------------------------------------------------
   subroutine ApplyOnChildren(f,fparam)
+    implicit none
     interface
       integer function f(Info,Param)
         use NodeInfoDef
         ! Interface declarations
-        type (NodeInfo) :: Info
-        type (FuncParam) :: Param
+        type(NodeInfo) :: Info
+        type(FuncParam) :: Param
       end function f
     end interface
-    type (FuncParam) :: fparam
-    integer fErrCode
-    type (Node), pointer :: SaveCurrentNode
+    type(FuncParam), intent(in) :: fparam
+    integer                     :: fErrCode
+    type(Node), pointer         :: SaveCurrentNode
+    !
     ! Apply f on all children of the current node
     SaveCurrentNode=>CurrentNode
     CurrentNode=>CurrentNode%Child
@@ -629,7 +628,7 @@ contains
       if (fErrCode /= err_OK) then
         ErrCode = fErrCode
         if (fErrCode<ErrPrint) &
-              print *, 'Error in ApplyOnChildren. fErrCode=',fErrCode
+          print *, 'Error in ApplyOnChildren. fErrCode=',fErrCode
         return
       end if
       CurrentNode=>CurrentNode%Sibling
@@ -638,18 +637,21 @@ contains
   end subroutine ApplyOnChildren
   ! ---------------------------------------------------------------------------
   subroutine ApplyOnForest(f,fparam,PreEval)
-    ! Apply func on all nodes within tree
+    !
+    ! Apply function f on all nodes within tree
+    !
+    implicit none
     interface
       integer function f(Info,Param)
         use NodeInfoDef
         ! Interface declarations
-        type (NodeInfo) :: Info
-        type (FuncParam) :: Param
+        type(NodeInfo) :: Info
+        type(FuncParam) :: Param
       end function f
     end interface
-    type (FuncParam) :: fparam
-    logical, optional :: PreEval
-    logical EvalNextBefore_f
+    type(FuncParam), intent(in)           :: fparam
+    logical,         intent(in), optional :: PreEval
+    logical                               :: EvalNextBefore_f
     !
     ! First executable statement
     CurrentNode => Root
@@ -663,23 +665,26 @@ contains
   end subroutine ApplyOnForest
   ! ---------------------------------------------------------------------------
   subroutine ApplyOnLevels(f,fparam,PreEval)
+    !
     ! Level  0: Root
     ! Level  1: 1st generation children
     ! ....
     ! Level  n: n-th generation children
     ! Level -1: Parents of leaves
     ! Level -2: Grandparents of leaves
+    !
+    implicit none
     interface
       integer function f(Info,Param)
         use NodeInfoDef
-        ! Interface declarations
-        type (NodeInfo) :: Info
-        type (FuncParam) :: Param
+        implicit none
+        type(NodeInfo)  :: Info
+        type(FuncParam) :: Param
       end function f
     end interface
-    type (FuncParam) :: fparam
-    logical, optional :: PreEval
-    logical EvalNextBefore_f
+    type(FuncParam), intent(in)           :: fparam
+    logical,         intent(in), optional :: PreEval
+    logical                               :: EvalNextBefore_f
     !
     CurrentNode => Root
     CurrentLevel=rootlevel
@@ -692,18 +697,21 @@ contains
   end subroutine ApplyOnLevels
   ! ---------------------------------------------------------------------------
   subroutine ApplyOnLeaves(f,fparam,PreEval)
+    !
     ! Leaves = youngest generation in existence
+    !
+    implicit none
     interface
       integer function f(Info,Param)
         use NodeInfoDef
         ! Interface declarations
-        type (NodeInfo) :: Info
-        type (FuncParam) :: Param
+        type(NodeInfo) :: Info
+        type(FuncParam) :: Param
       end function f
     end interface
-    type (FuncParam) :: fparam
-    logical, optional :: PreEval
-    logical EvalNextBefore_f
+    type(FuncParam), intent(in)           :: fparam
+    logical,         intent(in), optional :: PreEval
+    logical                               :: EvalNextBefore_f
     !
     ! First executable statement
     CurrentNode => Root
@@ -719,21 +727,24 @@ contains
   ! Routines interior to the module
   ! ---------------------------------------------------------------------------
   subroutine ForestTraversal(aNode,f,cond,fparam,EvalNextBefore_f)
+    !
     ! Traverse the root level nodes
-    type (Node), pointer :: aNode
+    !
+    implicit none
     interface
       integer function f(Info,Param)
         use NodeInfoDef
-        ! Interface declarations
-        type (NodeInfo) :: Info
-        type (FuncParam) :: Param
+        implicit none
+        type(NodeInfo)  :: Info
+        type(FuncParam) :: Param
       end function f
       logical function cond()
       end function cond
     end interface
-    type (FuncParam) :: fparam
-    logical EvalNextBefore_f
-    type (Node), pointer :: Next
+    type(Node), pointer, intent(in) :: aNode
+    type(FuncParam),     intent(in) :: fparam
+    logical,             intent(in) :: EvalNextBefore_f
+    type(Node), pointer             :: Next
     !
     Next => aNode
     do
@@ -751,20 +762,22 @@ contains
     !      *aNode*
     !   3) Update *Level* counter
     !
-    type (Node), target, intent(in) :: aNode
+    implicit none
     interface
       integer function f(Info,Param)
         use NodeInfoDef
-        type (NodeInfo) :: Info
-        type (FuncParam) :: Param
+        implicit none
+        type(NodeInfo)  :: Info
+        type(FuncParam) :: Param
       end function f
       logical function cond()
       end function cond
     end interface
-    type (FuncParam) :: fparam
-    logical :: EvalNextBefore_f
-    type (Node), pointer :: Next
-    integer fErrCode,level
+    type(Node), target, intent(in) :: aNode
+    type(FuncParam),    intent(in) :: fparam
+    logical,            intent(in) :: EvalNextBefore_f
+    type(Node), pointer            :: Next
+    integer                        :: fErrCode,level
     !
     ! First executable statement
     if (ErrCode /= err_OK) return   ! Go up recursion upon error
@@ -778,7 +791,7 @@ contains
       if (fErrCode /= err_OK) then
         ErrCode = fErrCode
         if (fErrCode<ErrPrint) &
-             print *, 'Error on applying f. fErrCode=', fErrCode
+          print *, 'Error on applying f. fErrCode=', fErrCode
         return
       end if
     end if
@@ -793,7 +806,8 @@ contains
         exit
       else
         CurrentLevel=CurrentLevel+1
-        level=CurrentLevel  ! Node has children; go down
+        level=CurrentLevel  ! Node has children
+        go down
         call TreeTraversal(Next,f,cond,fparam,EvalNextBefore_f)
         ! Reset global context from local context when returning from recursion
         CurrentNode => aNode
@@ -804,14 +818,17 @@ contains
   end subroutine TreeTraversal
   ! ---------------------------------------------------------------------------
   logical function TrueCond()
+    implicit none
     TrueCond = .true.
   end function TrueCond
   ! ---------------------------------------------------------------------------
   logical function LevelCond()
+    implicit none
     LevelCond = .true.
   end function LevelCond
   ! ---------------------------------------------------------------------------
   logical function LeafCond()
+    implicit none
     if (.not. associated(CurrentNode%Child)) then
       LeafCond = .true.
     else
@@ -820,10 +837,11 @@ contains
   end function LeafCond
   ! ---------------------------------------------------------------------------
   integer function SetChildNo(Info,Param)
-    type (NodeInfo) :: Info
-    type (FuncParam) :: Param
-    type (Node), pointer :: Youngest
-    integer :: ListNo, NrOfChildren
+    implicit none
+    type(NodeInfo)      :: Info
+    type(FuncParam)     :: Param
+    type(Node), pointer :: Youngest
+    integer             :: ListNo, NrOfChildren
     !
     if (CurrentNode%Level==rootlevel) then
       CurrentNode%ChildNo=FIRST_CHILD
@@ -847,12 +865,14 @@ contains
   end function SetChildNo
   ! ---------------------------------------------------------------------------
   integer function GetTreeOpsErrCode()
+    implicit none
     GetTreeOpsErrCode = ErrCode
   end function GetTreeOpsErrCode
   ! ---------------------------------------------------------------------------
   integer function GetNodeInfo(aNode,aNodeInfo)
-    type (Node), pointer :: aNode
-    type (NodeInfo) :: aNodeInfo
+    implicit none
+    type(Node), pointer :: aNode
+    type(NodeInfo)      :: aNodeInfo
     !
     if (associated(aNode)) then
       aNodeInfo = aNode%Info
@@ -863,8 +883,9 @@ contains
   end function GetNodeInfo
   ! ---------------------------------------------------------------------------
   integer function SetNodeInfo(aNode,aNodeInfo)
-    type (Node), pointer :: aNode
-    type (NodeInfo) :: aNodeInfo
+    implicit none
+    type(Node), pointer :: aNode
+    type(NodeInfo)      :: aNodeInfo
     !
     if (associated(aNode)) then
       aNode%Info = aNodeInfo
@@ -875,7 +896,8 @@ contains
   end function SetNodeInfo
   ! ---------------------------------------------------------------------------
   integer function GetCurrentNodeInfo(aNodeInfo)
-    type (NodeInfo) :: aNodeInfo
+    implicit none
+    type(NodeInfo) :: aNodeInfo
     if (associated(CurrentNode)) then
       aNodeInfo = CurrentNode%Info
       GetCurrentNodeInfo = err_OK
@@ -885,11 +907,13 @@ contains
   end function GetCurrentNodeInfo
   ! ---------------------------------------------------------------------------
   integer function GetNodeNo()
+    implicit none
     GetNodeNo=CurrentNode%NodeNo
   end function GetNodeNo
   ! ---------------------------------------------------------------------------
   integer function SetCurrentNodeInfo(aNodeInfo)
-    type (NodeInfo) :: aNodeInfo
+    implicit none
+    type(NodeInfo) :: aNodeInfo
     !
     if (associated(CurrentNode)) then
       CurrentNode%Info = aNodeInfo
@@ -900,7 +924,8 @@ contains
   end function SetCurrentNodeInfo
   ! ---------------------------------------------------------------------------
   integer function GetRootInfo(aNodeInfo)
-    type (NodeInfo), pointer :: aNodeInfo
+    implicit none
+    type(NodeInfo), pointer :: aNodeInfo
     !
     if (associated(Root)) then
       aNodeInfo => Root%Info
@@ -911,7 +936,8 @@ contains
   end function GetRootInfo
   ! ---------------------------------------------------------------------------
   integer function SetRootInfo(aNodeInfo)
-    type (NodeInfo) :: aNodeInfo
+    implicit none
+    type(NodeInfo) :: aNodeInfo
     !
     if (associated(Root)) then
       Root%Info = aNodeInfo
@@ -922,11 +948,12 @@ contains
   end function SetRootInfo
   ! ---------------------------------------------------------------------------
   integer function GetParentInfo(aNodeInfo)
-    type (NodeInfo), pointer :: aNodeInfo
+    implicit none
+    type(NodeInfo), pointer :: aNodeInfo
     !
     if (associated(CurrentNode) .and. &
-        associated(CurrentNode%Parent) .and.  &
-        CurrentNode%Parent%level > FOREST_SEED) then
+      associated(CurrentNode%Parent) .and.  &
+      CurrentNode%Parent%level > FOREST_SEED) then
       aNodeInfo => CurrentNode%Parent%Info
       GetParentInfo = err_OK
     else
@@ -935,15 +962,17 @@ contains
   end function GetParentInfo
   ! ---------------------------------------------------------------------------
   integer function GetCurrentNode(aNode)
-    type (Node), pointer :: aNode
+    implicit none
+    type(Node), pointer :: aNode
     !
     GetCurrentNode = err_OK
     aNode => CurrentNode
   end function GetCurrentNode
   ! ---------------------------------------------------------------------------
   integer function GetParent(aNode,Parent)
-    type (Node), pointer :: aNode
-    type (Node), pointer :: Parent
+    implicit none
+    type(Node), pointer :: aNode
+    type(Node), pointer :: Parent
     !
     if (associated(aNode)) then
       if (associated(aNode%Parent)) then
@@ -959,8 +988,9 @@ contains
   end function GetParent
   ! ---------------------------------------------------------------------------
   integer function GetSibling(aNode,Sibling)
-    type (Node), pointer :: aNode
-    type (Node), pointer :: Sibling
+    implicit none
+    type(Node), pointer :: aNode
+    type(Node), pointer :: Sibling
     !
     if (associated(aNode)) then
       if (associated(aNode%Sibling)) then
@@ -976,8 +1006,9 @@ contains
   end function GetSibling
   ! ---------------------------------------------------------------------------
   integer function GetChild(aNode,Child)
-    type (Node), pointer :: aNode
-    type (Node), pointer :: Child
+    implicit none
+    type(Node), pointer :: aNode
+    type(Node), pointer :: Child
     !
     if (associated(aNode)) then
       if (associated(aNode%Child)) then
@@ -993,7 +1024,8 @@ contains
   end function GetChild
   ! ---------------------------------------------------------------------------
   integer function GetChildInfo(aNodeInfo)
-    type (NodeInfo), pointer :: aNodeInfo
+    implicit none
+    type(NodeInfo), pointer :: aNodeInfo
     !
     if (associated(CurrentNode) .and. associated(CurrentNode%Child)) then
       aNodeInfo => CurrentNode%Child%Info
@@ -1004,7 +1036,8 @@ contains
   end function GetChildInfo
   ! ---------------------------------------------------------------------------
   integer function GetLevel(ThisLevel)
-    integer ThisLevel
+    implicit none
+    integer :: ThisLevel
     !
     ThisLevel = CurrentLevel
     if (ThisLevel /= CurrentNode%level) then
@@ -1015,9 +1048,10 @@ contains
   end function GetLevel
   ! ---------------------------------------------------------------------------
   integer function GetSiblingIndex(SiblingIndex)
-    integer SiblingIndex
-    integer NrOfSiblings
-    type (Node), pointer :: NextSibling,ThisSibling
+    implicit none
+    integer             :: SiblingIndex
+    integer             :: NrOfSiblings
+    type(Node), pointer :: NextSibling,ThisSibling
     !
     ThisSibling => CurrentNode
     SiblingIndex=1
@@ -1053,8 +1087,9 @@ contains
   end function GetSiblingIndex
   ! ---------------------------------------------------------------------------
   integer function GetNrOfChildren(NrOfChildren)
-    integer :: NrOfChildren
-    type (Node), pointer :: NextChild
+    implicit none
+    integer             :: NrOfChildren
+    type(Node), pointer :: NextChild
     !
     NrOfChildren=0
     NextChild => CurrentNode%Child
@@ -1075,6 +1110,7 @@ contains
   end function GetNrOfChildren
   ! ---------------------------------------------------------------------------
   logical function ExistLevel(level)
+    implicit none
     integer :: level
     !
     if (abs(level)>MaxDepth) then
@@ -1090,6 +1126,7 @@ contains
   end function ExistLevel
   ! ---------------------------------------------------------------------------
   subroutine PushForest
+    implicit none
     !
     ! Save current tree traversal state to allow a subsidiary tree traversal
     ! to take place
@@ -1105,6 +1142,7 @@ contains
   end subroutine PushForest
   ! ---------------------------------------------------------------------------
   subroutine PopForest
+    implicit none
     !
     ! Restore tree traversal state on return from a subsidiary tree traversal
     !

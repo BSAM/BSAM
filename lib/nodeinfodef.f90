@@ -51,40 +51,35 @@ module NodeInfoDef
   logical :: restart
   logical :: syncelliptic
   !
-  ! Double (r8) and extended (rext) precision if available
-  integer, parameter :: r8   = selected_real_kind(15,307)
-  integer, parameter :: rext = selected_real_kind(15,307)
-  !
-  integer, parameter :: errflagdefault = 1
-  integer, parameter :: errflaguser    = 10
-  integer, parameter :: internalbc     = 999
-  integer, parameter :: maxsubgrids    = 1024
-  integer, parameter :: maxdims        = 3
-  integer, parameter :: maxdepth       = 10
-  integer, parameter :: maxnrvars      = 25
-  integer, parameter :: rootlevel      = 0
-  integer, parameter :: sourcefield    = 1
-  integer, parameter :: solutionfield  = 2
-  integer, parameter :: auxiliaryfield = 3
-  integer :: errortype
-  integer :: finestlevel
-  integer :: gridnumber
-  integer :: maxvcycles
-  integer :: maxlevel
-  integer :: minlevel
-  integer :: ndims
-  integer :: nperiodicoffsets
-  integer :: nrootgrids
-  integer :: nsmoothingpasses
-  integer :: ntaggedcells
-  integer :: outframes
-  integer :: restartframe
-  integer :: timeiterations
-  integer :: totalmeshsize
-  integer :: updateauxfreq
-  integer :: eqtag
-  integer :: eqfn
-  real(kind=r8) :: sigma0
+  integer, parameter                       :: errflagdefault = 1
+  integer, parameter                       :: errflaguser    = 10
+  integer, parameter                       :: internalbc     = 999
+  integer, parameter                       :: maxsubgrids    = 1024
+  integer, parameter                       :: maxdims        = 3
+  integer, parameter                       :: maxdepth       = 10
+  integer, parameter                       :: maxnrvars      = 25
+  integer, parameter                       :: rootlevel      = 0
+  integer, parameter                       :: sourcefield    = 1
+  integer, parameter                       :: solutionfield  = 2
+  integer, parameter                       :: auxiliaryfield = 3
+  integer                                  :: errortype
+  integer                                  :: finestlevel
+  integer                                  :: gridnumber
+  integer                                  :: maxvcycles
+  integer                                  :: maxlevel
+  integer                                  :: minlevel
+  integer                                  :: ndims
+  integer                                  :: nperiodicoffsets
+  integer                                  :: nrootgrids
+  integer                                  :: nsmoothingpasses
+  integer                                  :: ntaggedcells
+  integer                                  :: outframes
+  integer                                  :: restartframe
+  integer                                  :: timeiterations
+  integer                                  :: totalmeshsize
+  integer                                  :: updateauxfreq
+  integer                                  :: eqtag
+  integer                                  :: eqfn
   integer, dimension(:),   allocatable     :: periodicoffsetindex
   integer, dimension(:,:), allocatable     :: poffset
   integer, dimension(0:maxdepth)           :: errflagopt
@@ -92,37 +87,36 @@ module NodeInfoDef
   integer, dimension(0:maxdepth)           :: minimumgridpoints
   integer, dimension(0:maxdepth,1:maxdims) :: mxmax
   !
-  real(kind=r8) :: currenttime
-  real(kind=r8) :: dt
-  real(kind=r8) :: finaltime
-  real(kind=r8) :: omega
-  real(kind=r8) :: qerrortol
-  real(kind=r8) :: restarttime
-  real(kind=r8), dimension(1:2)         :: integralresult
-  real(kind=r8), dimension(1:maxnrvars) :: componentintegral
-  real(kind=r8), dimension(1:maxnrvars) :: qpo
-  real(kind=r8), dimension(0:maxdepth)  :: desiredfillratios
-  real(kind=r8), dimension(0:maxdepth)  :: qtolerance
-  real(kind=r8), dimension(:,:), allocatable :: qoffset
-  !
-  ! Yao-li, 2007-06: Add 2 glob variables for GetQAt function in gridutilities.
-  real(kind=r8), dimension(1:3),         public :: position_to_get_q
-  real(kind=r8), dimension(1:maxnrvars), public :: q_at_position
+  real                              :: sigma0
+  real                              :: currenttime
+  real                              :: dt
+  real                              :: finaltime
+  real                              :: omega
+  real                              :: qerrortol
+  real                              :: restarttime
+  real, dimension(1:2)              :: integralresult
+  real, dimension(1:maxnrvars)      :: componentintegral
+  real, dimension(1:maxnrvars)      :: qpo
+  real, dimension(0:maxdepth)       :: desiredfillratios
+  real, dimension(0:maxdepth)       :: qtolerance
+  real, dimension(:,:), allocatable :: qoffset
   !
   type :: taggedcell
-    integer :: id
+    integer                       :: id
     integer, dimension(1:maxdims) :: coordinate
-    type(taggedcell), pointer :: prevcell
+    type(taggedcell), pointer     :: prevcell
   end type taggedcell
+  !
   type(taggedcell), pointer :: zerothtaggedcell
   type(taggedcell), pointer :: currenttaggedcell
   type(taggedcell), pointer :: lasttaggedcell
   !
   ! Uniform grids used for restarting and output:
   type :: uniformgridtype
-    integer, dimension(1:maxdims) :: mx
-    real(kind=r8), dimension(:,:,:,:), pointer :: q
+    integer, dimension(1:maxdims)     :: mx
+    real, dimension(:,:,:,:), pointer :: q
   end type uniformgridtype
+  !
   type(uniformgridtype), dimension(0:maxdepth) :: uniformgrid
   !
   type :: nodeinfo
@@ -130,93 +124,100 @@ module NodeInfoDef
     ! This must be the first component to ensure proper parallel communication
     integer :: nodeinfostart
     !
-    ! A necessary component. Mark for garbage collection
+    ! Logical variables
+    ! ------------------------------------------------------------------------
+    ! tobedeleted       A necessary component. Mark for garbage collection.
+    ! newgrid           Flag to show if grid may accept values from elder
+    !                   siblings on this level.
+    ! restartgrid       Flag to show if grid has been created during a restart
+    !                   from checkpoint file.
+    ! fieldsallocated   Flag showing allocation status of fields within this
+    !                   node.
+    ! initialgrid       Flag to show whether this is an initial grid, i.e.
+    !                   created during start-up.
+    !
     logical :: tobedeleted
-    !
-    ! Flag to show whether grid may accept values from elder siblings on this
-    ! level
     logical :: newgrid
-    !
-    ! Flag to show whether grid has been created during a restart from
-    ! checkpoint file
     logical :: restartgrid
-    !
-    ! Flag showing allocation status of fields within this node
     logical :: fieldsallocated
-    !
-    ! Flag to show whether this is an initial grid, i.e. created during start-up
     logical :: initialgrid
     !
-    integer :: maxlevel   ! Maximum level to which this grid may be refined
-    integer :: ngrid      ! Number of this grid
-    integer :: nsubgrids  ! Number of child grids
-    integer :: level      ! Level on which this node lives
-    integer :: nrvars     ! Number of problem field variables
-    integer :: mbc        ! Number of ghost cells
-    integer :: nout       ! Number of output frames
-    integer :: nframe     ! Current frame being output
-    integer :: outstyle   ! Style of output frames
-    integer :: nroutvars  ! Number of output variables
-    integer :: maux       ! Number of auxilliary field variables
+    ! Integers
+    ! ------------------------------------------------------------------------
+    ! maxlevel      Maximum level to which this grid may be refined
+    ! ngrid         Number of this grid
+    ! nsubgrids     Number of child grids
+    ! level         Level on which this node lives
+    ! nrvars        Number of problem field variables
+    ! mbc           Number of ghost cells
+    ! nout          Number of output frames
+    ! nframe        Current frame being output
+    ! outstyle      Style of output frames
+    ! nroutvars     Number of output variables
+    ! maux          Number of auxilliary field variables
+    ! mx            Number of grid cells in q along each dimension
+    ! mbounds       Index bounds within parent where this child was created
+    ! mglobal       Index bounds of this grid in global indexing system
+    ! mthbc         Boundary condition codes
+    !                 1 - back
+    !                 2 - front
+    !                 3 - left
+    !                 4 - right
+    !                 5 - bottom
+    !                 6 - top
+    ! errorflags    Array of error flags
     !
-    ! Number of grid cells in q along each dimension
-    integer, dimension(1:maxdims) :: mx
-    !
-    ! Index bounds within parent where this child was created
-    integer, dimension(1:maxdims,1:2) :: mbounds
-    !
-    ! Index bounds of this grid in global indexing system
-    integer, dimension(1:maxdims,1:2) :: mglobal
-    !
-    ! Boundary condition codes
-    !   1 - back, 2 - front, 3 - left, 4 - right, 5 - bottom, 6 - top
-    integer, dimension(1:2*maxdims) :: mthbc
-    !
-    ! Array of error flags
+    integer                            :: maxlevel
+    integer                            :: ngrid
+    integer                            :: nsubgrids
+    integer                            :: level
+    integer                            :: nrvars
+    integer                            :: mbc
+    integer                            :: nout
+    integer                            :: nframe
+    integer                            :: outstyle
+    integer                            :: nroutvars
+    integer                            :: maux
+    integer, dimension(1:maxdims)      :: mx
+    integer, dimension(1:maxdims,1:2)  :: mbounds
+    integer, dimension(1:maxdims,1:2)  :: mglobal
+    integer, dimension(1:2*maxdims)    :: mthbc
     integer, dimension(:,:,:), pointer :: errorflags
     !
-    ! Lower coordinates for this grid
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    ! Reals
+    ! ------------------------------------------------------------------------
+    ! time          The current time at which this grid exists
+    ! xlower        Lower coordinates for this grid
+    ! xupper        Upper coordinates for this grid
+    ! dx            Grid spacings
+    ! q             Pointer to field variable arrays
+    ! qold          Pointer to field variable arrays at previous time
+    ! qc            Pointer to the coarse-under-fine field variable arrays
+    ! qrte          Pointer to the coarse-under-fine relative truncation error
+    ! f             Pointer to the load function
+    ! rf            Pointer to the residual of solution q
+    ! ftmp          Pointer to the temporary function.  Same size as f and rf
+    ! aux           Pointer to auxilliary arrays
     !
-    ! Upper coordinates for this grid
-    real(kind=r8), dimension(1:maxdims) :: xupper
-    !
-    ! The current time at which this grid exists
-    real(kind=r8) :: time
-    !
-    ! Grid spacings
-    real(kind=r8), dimension(1:maxdims) :: dx
-    !
-    ! Pointer to field variable arrays
-    real(kind=r8), dimension(:,:,:,:), pointer :: q
-    !
-    ! Pointer to field variable arrays at previous time
-    real(kind=r8), dimension(:,:,:,:), pointer :: qold
-    !
-    ! Pointer to the coarse-under-fine field variable arrays
-    real(kind=r8), dimension(:,:,:,:), pointer :: qc
-    !
-    ! Pointer to the coarse-under-fine relative truncation error
-    real(kind=r8), dimension(:,:,:,:), pointer :: qrte
-    !
-    ! Pointer to the load function
-    real(kind=r8), dimension(:,:,:,:), pointer :: f
-    !
-    ! Pointer to the residual of solution q
-    real(kind=r8), dimension(:,:,:,:), pointer :: rf
-    !
-    ! Pointer to the temporary function.  Same size as f and rf
-    real(kind=r8), dimension(:,:,:,:), pointer :: ftmp
-    !
-    ! Pointer to auxilliary arrays
-    real(kind=r8), dimension(:,:,:,:), pointer :: aux
+    real                              :: time
+    real, dimension(1:maxdims)        :: xlower
+    real, dimension(1:maxdims)        :: xupper
+    real, dimension(1:maxdims)        :: dx
+    real, dimension(:,:,:,:), pointer :: q
+    real, dimension(:,:,:,:), pointer :: qold
+    real, dimension(:,:,:,:), pointer :: qc
+    real, dimension(:,:,:,:), pointer :: qrte
+    real, dimension(:,:,:,:), pointer :: f
+    real, dimension(:,:,:,:), pointer :: rf
+    real, dimension(:,:,:,:), pointer :: ftmp
+    real, dimension(:,:,:,:), pointer :: aux
     !
     ! This must be the last component to ensure proper parallel communication
     integer :: nodeinfoend
   end type nodeinfo
   !
   type :: funcparam
-    integer :: iswitch
+    integer                 :: iswitch
     type(nodeinfo), pointer :: info
   end type funcparam
   !

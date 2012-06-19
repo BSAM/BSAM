@@ -40,19 +40,18 @@
 ! Revision History: Ver. 1.1 May. 2007 Steven Wise
 ! -----------------------------------------------------------------------
 module Boundary
-  use NodeInfoDef, only: r8
   implicit none
   !
-  real(kind=r8), parameter :: a1 = - 1.0/ 5.0
-  real(kind=r8), parameter :: a2 =   2.0/ 3.0
-  real(kind=r8), parameter :: a3 =   8.0/15.0
-  real(kind=r8), parameter :: b1 =   5.0/32.0
-  real(kind=r8), parameter :: b2 =  15.0/16.0
-  real(kind=r8), parameter :: b3 = - 3.0/32.0
-  real(kind=r8), parameter :: c1 =   9.0/16.0
-  real(kind=r8), parameter :: c2 =   3.0/16.0
-  real(kind=r8), parameter :: c3 =   3.0/16.0
-  real(kind=r8), parameter :: c4 =   1.0/16.0
+  real, parameter :: a1 = - 1.0/ 5.0
+  real, parameter :: a2 =   2.0/ 3.0
+  real, parameter :: a3 =   8.0/15.0
+  real, parameter :: b1 =   5.0/32.0
+  real, parameter :: b2 =  15.0/16.0
+  real, parameter :: b3 = - 3.0/32.0
+  real, parameter :: c1 =   9.0/16.0
+  real, parameter :: c2 =   3.0/16.0
+  real, parameter :: c3 =   3.0/16.0
+  real, parameter :: c4 =   1.0/16.0
   !
 contains
   ! ---------------------------------------------------------------------------
@@ -93,12 +92,12 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok, GetParentInfo
     implicit none
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    type(nodeinfo), pointer :: parent
-    integer :: ierror, ipass, nrvars
-    integer, dimension(1:maxdims) :: mx, pmx
-    integer, dimension(1:2*maxdims) :: mthbc
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
+    type(nodeinfo), pointer           :: parent
+    integer                           :: ierror, ipass, nrvars
+    integer, dimension(1:maxdims)     :: mx, pmx
+    integer, dimension(1:2*maxdims)   :: mthbc
     integer, dimension(1:maxdims,1:2) :: mb
     !
     InterpolateCoarseFine = err_ok
@@ -134,15 +133,14 @@ contains
   end function InterpolateCoarseFine
   ! ---------------------------------------------------------------------------
   subroutine Interpolate2D(qf,qc,mx,nrvars,mb,mthbc,ipass)
-    use NodeInfoDef, only: r8
     implicit none
-    real(kind=r8), dimension(0:,0:,1:), intent(in out) :: qf
-    real(kind=r8), dimension(0:,0:,1:), intent(in) :: qc
-    integer, dimension(1:2), intent(in) :: mx
-    integer, intent(in) :: nrvars
-    integer, dimension(1:2,1:2), intent(in) :: mb
-    integer, dimension(1:4), intent(in) :: mthbc
-    integer, intent(in) :: ipass
+    real, dimension(0:,0:,1:), intent(in out) :: qf
+    real, dimension(0:,0:,1:), intent(in)     :: qc
+    integer, dimension(1:2), intent(in)       :: mx
+    integer, intent(in)                       :: nrvars
+    integer, dimension(1:2,1:2), intent(in)   :: mb
+    integer, dimension(1:4), intent(in)       :: mthbc
+    integer, intent(in)                       :: ipass
     !
     ! Corners:
     !
@@ -331,7 +329,7 @@ contains
     use NodeinfoDef
     use TreeOps, only: err_ok
     implicit none
-    type(nodeinfo) :: grid1, grid2
+    type(nodeinfo)  :: grid1, grid2
     type(funcparam) :: dummy
     !
     TransferBC=err_ok
@@ -351,9 +349,9 @@ contains
     !
     use NodeinfoDef
     implicit none
-    type(nodeinfo) :: grid1
-    type(nodeinfo) :: grid2
-    integer :: mbc, n, nrvars
+    type(nodeinfo)                    :: grid1
+    type(nodeinfo)                    :: grid2
+    integer                           :: mbc, n, nrvars
     integer, dimension(1:maxdims,1:2) :: mg1, mg2, ml1, ml2, ovg, ovg1, ovg2
     !
     mbc = grid2%mbc
@@ -494,7 +492,7 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    type(nodeinfo) :: grid1, grid2
+    type(nodeinfo)  :: grid1, grid2
     type(funcparam) :: dummy
     !
     TransferPeriodicBC = err_ok
@@ -516,9 +514,9 @@ contains
     !
     use NodeinfoDef
     implicit none
-    type(nodeinfo) :: grid1
-    type(nodeinfo) :: grid2
-    integer :: mbc, n, nrvars, offset
+    type(nodeinfo)                    :: grid1
+    type(nodeinfo)                    :: grid2
+    integer                           :: mbc, n, nrvars, offset
     integer, dimension(1:maxdims,1:2) :: mg1, mg2, ml1, ml2, ovg, ovg1, ovg2
     !
     mbc = grid2%mbc
@@ -601,13 +599,13 @@ contains
     use NodeinfoDef
     use TreeOps, only: err_ok
     implicit none
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    integer :: ll, mbc, nrvars
-    integer, dimension(1:maxdims) :: mx, ul
-    real(kind=r8), dimension(1:maxdims) :: xlower,dx
+    type(nodeinfo)                  :: info
+    type(funcparam)                 :: dummy
+    integer                         :: ll, mbc, nrvars
+    integer, dimension(1:maxdims)   :: mx, ul
+    real, dimension(1:maxdims)      :: xlower,dx
     integer, dimension(1:2*maxdims) :: mthbc
-    integer :: ipass
+    integer                         :: ipass
     !
     ! Red-black switch when used:
     ipass = dummy%iswitch
@@ -646,16 +644,16 @@ contains
     use NodeinfoDef
     use Problem, only: UserBC2D
     implicit none
-    real(kind=r8), dimension(ll:,ll:,1:), intent(in out) :: q
-    integer, intent(in) :: ll
-    integer, dimension(1:2), intent(in) :: mx
-    real(kind=r8), intent(in) :: h
-    real(kind=r8), dimension(1:2), intent(in) :: xlower
-    integer, intent(in) :: nrvars
-    integer, intent(in) :: mbc
-    integer, dimension(1:4), intent(in) :: mthbc
-    integer :: ibc
-    integer, dimension(1:2) :: ul
+    real, dimension(ll:,ll:,1:), intent(in out) :: q
+    integer, intent(in)                         :: ll
+    integer, dimension(1:2), intent(in)         :: mx
+    real, intent(in)                            :: h
+    real, dimension(1:2), intent(in)            :: xlower
+    integer, intent(in)                         :: nrvars
+    integer, intent(in)                         :: mbc
+    integer, dimension(1:4), intent(in)         :: mthbc
+    integer                                     :: ibc
+    integer, dimension(1:2)                     :: ul
     !
     ul(1:2) = mx(1:2)+mbc
     !
@@ -749,14 +747,14 @@ contains
     use NodeinfoDef
     use Problem, only: UserBC3D
     implicit none
-    real(kind=r8), dimension(ll:,ll:,ll:,1:), intent(in out) :: q
-    integer, intent(in) :: ll
-    integer, dimension(1:3), intent(in) :: mx
-    integer, intent(in) :: nrvars
-    integer, intent(in) :: mbc
-    integer, dimension(1:6), intent(in) :: mthbc
-    integer :: ibc
-    integer, dimension(1:3) :: ul
+    real, dimension(ll:,ll:,ll:,1:), intent(in out) :: q
+    integer, intent(in)                             :: ll
+    integer, dimension(1:3), intent(in)             :: mx
+    integer, intent(in)                             :: nrvars
+    integer, intent(in)                             :: mbc
+    integer, dimension(1:6), intent(in)             :: mthbc
+    integer                                         :: ibc
+    integer, dimension(1:3)                         :: ul
     !
     ul(1:3) = mx(1:3)+mbc
     !
@@ -900,8 +898,8 @@ contains
     use NodeInfoDef
     use BSAMStorage, only: AllocPeriodicBCStorage
     implicit none
-    type(nodeinfo) :: rootinfo
-    integer :: np, nrvars
+    type(nodeinfo)                  :: rootinfo
+    integer                         :: np, nrvars
     integer, dimension(1:2*maxdims) :: mthbc
     !
     mthbc = 1
@@ -968,7 +966,7 @@ contains
     use NodeInfoDef
     implicit none
     type(nodeinfo) :: info
-    integer :: level, nrvars, offset
+    integer        :: level, nrvars, offset
     !
     level = info%level
     nrvars = info%nrvars
@@ -1049,10 +1047,10 @@ contains
     use NodeInfoDef
     implicit none
     integer, dimension(1:maxdims), intent(in out) :: coordinate
-    integer, intent(in) :: level
-    integer, intent(in) :: offset
-    logical, intent(out) :: periodicbuffer
-    integer, dimension(1:3,1:2) :: mg
+    integer, intent(in)                           :: level
+    integer, intent(in)                           :: offset
+    logical, intent(out)                          :: periodicbuffer
+    integer, dimension(1:3,1:2)                   :: mg
     !
     ! Global coordinates of the buffer patch:
     mg = 1
@@ -1209,11 +1207,11 @@ contains
     use NodeInfoDef
     use TreeOps, only: GetParentInfo, err_ok
     implicit none
-    type(nodeinfo) :: info
-    type(funcparam) :: dummy
-    type(nodeinfo), pointer :: parent
-    integer :: ierror, nrvars
-    integer, dimension(1:maxdims) :: cmx, ih, il, jh, jl, mx
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
+    type(nodeinfo), pointer           :: parent
+    integer                           :: ierror, nrvars
+    integer, dimension(1:maxdims)     :: cmx, ih, il, jh, jl, mx
     integer, dimension(1:maxdims,1:2) :: mb
     !
     GetCoarseGhostPoints = err_ok
@@ -1272,11 +1270,11 @@ contains
   ! ---------------------------------------------------------------------------
   subroutine GetFaceIndex(mx,mb,dim,parity,fi)
     implicit none
-    integer, dimension(1:3), intent(in) ::mx
-    integer, dimension(1:3,1:2), intent(in) ::mb
-    integer, intent(in) :: dim
-    integer, intent(in) :: parity
-    integer, dimension(1:5), intent(out) :: fi
+    integer, dimension(1:3), intent(in)     :: mx
+    integer, dimension(1:3,1:2), intent(in) :: mb
+    integer, intent(in)                     :: dim
+    integer, intent(in)                     :: parity
+    integer, dimension(1:5), intent(out)    :: fi
     !
     select case(parity)
     case(1)
@@ -1299,18 +1297,18 @@ contains
   end subroutine GetFaceIndex
   ! ---------------------------------------------------------------------------
   subroutine Interpolate3D(qf,qc,mx,nrvars,mb,mthbc,ipass)
-    use NodeInfoDef, only: r8
     implicit none
-    real(kind=r8), dimension(0:,0:,0:,1:), intent(in out) :: qf
-    real(kind=r8), dimension(0:,0:,0:,1:), intent(in) :: qc
-    integer, dimension(1:3), intent(in) :: mx
-    integer, intent(in) :: nrvars
-    integer, dimension(1:3,1:2), intent(in) :: mb
-    integer, dimension(1:6), intent(in) :: mthbc
-    integer, intent(in) :: ipass
-    logical, dimension(1:6) :: cycle_face
-    integer :: fc, parity_1, parity_2, parity_3
-    integer, dimension(1:3,1:5) :: fi
+    real, dimension(0:,0:,0:,1:), intent(in out) :: qf
+    real, dimension(0:,0:,0:,1:), intent(in)     :: qc
+    integer, dimension(1:3), intent(in)          :: mx
+    integer, intent(in)                          :: nrvars
+    integer, dimension(1:3,1:2), intent(in)      :: mb
+    integer, dimension(1:6), intent(in)          :: mthbc
+    integer, intent(in)                          :: ipass
+    logical, dimension(1:6)                      :: cycle_face
+    integer                                      :: fc
+    integer                                      :: parity_1,parity_2,parity_3
+    integer, dimension(1:3,1:5)                  :: fi
     !
     ! ipass = 1: red (or odd-odd and even-even) squares should be updated,
     ! ipass = 2: black (or even-odd and odd-even) squares should be updated.

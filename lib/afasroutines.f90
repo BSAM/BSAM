@@ -42,7 +42,7 @@ contains
     implicit none
     type(funcparam) :: dummy
     integer         :: itmg, level
-    real(kind=r8)   :: residual,oldresidual=1.0e30
+    real            :: residual,oldresidual=1.0e30
     !
     call FillDown(solutionfield)
     !
@@ -104,18 +104,18 @@ contains
     use NodeInfoDef
     use TreeOps, only: ApplyOnLevel, GetRootInfo
     implicit none
-    integer, intent(in)                   :: level
-    integer                               :: i, ierror, nrvars
-    type(nodeinfo), pointer               :: rootinfo
-    type(funcparam)                       :: dummy
-    real(kind=r8)                         :: errorresult
-    real(kind=r8), dimension(1:maxnrvars) :: componenterror
+    integer, intent(in)          :: level
+    integer                      :: i, ierror, nrvars
+    type(nodeinfo), pointer      :: rootinfo
+    type(funcparam)              :: dummy
+    real                         :: errorresult
+    real, dimension(1:maxnrvars) :: componenterror
     !
     select case(errortype)
     case(1)
       !
       ! Blended error calculation:
-      integralresult(1:2) = 0.0_r8
+      integralresult(1:2) = 0.0
       !
       call ApplyOnLevel(level,L2Error,dummy)
       !
@@ -125,8 +125,8 @@ contains
       ! Component errors:
       ierror = GetRootInfo(rootinfo)
       nrvars = rootinfo%nrvars
-      integralresult(2) = 0.0_r8
-      componentintegral(1:nrvars) = 0.0_r8
+      integralresult(2) = 0.0
+      componentintegral(1:nrvars) = 0.0
       !
       call ApplyOnLevel(level,L2ComponentErrors,dummy)
       !
@@ -169,8 +169,7 @@ contains
     integralresult(1) = SquareSum(info%rf(1:mx(1),1:mx(2),1:mx(3),1:nrvars)) &
                         + integralresult(1)
     !
-    integralresult(2) = real(nrvars*product(mx(1:ndims)),kind=r8) &
-                        + integralresult(2)
+    integralresult(2) = real(nrvars*product(mx(1:ndims))) + integralresult(2)
     !
   end function L2Error
   ! ---------------------------------------------------------------------------
@@ -199,7 +198,7 @@ contains
                              + componentintegral(i)
     end do
     !
-    integralresult(2) = real(product(mx(1:ndims)),kind=r8)+integralresult(2)
+    integralresult(2) = real(product(mx(1:ndims))) + integralresult(2)
     !
   end function L2ComponentErrors
   ! ---------------------------------------------------------------------------
@@ -209,8 +208,8 @@ contains
     !
     use NodeInfoDef
     implicit none
-    real(kind=r8), dimension(:,:,:,:), intent(in) :: rf
-    real(kind=r8)                                 :: squaresumresult
+    real, dimension(:,:,:,:), intent(in) :: rf
+    real                                 :: squaresumresult
     !
     squaresumresult = sum(rf*rf)
     !
@@ -239,8 +238,8 @@ contains
     use TreeOps,       only: err_ok, GetParentInfo
     use GridUtilities, only: Restriction2D, Restriction3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
     type(nodeinfo), pointer           :: parent
     integer                           :: field, ierror, nrvars
     integer, dimension(1:maxdims)     :: cmx, mx
@@ -313,12 +312,12 @@ contains
     use TreeOps, only: err_ok
     use Problem, only: Source2D, Source3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
-    integer                             :: ll, maux, mbc, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: amx, aul, mx, ul
-    real(kind=r8)                       :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    type(nodeinfo)                :: info
+    type(funcparam)               :: dummy
+    integer                       :: ll, maux, mbc, mmaux, nrvars
+    integer, dimension(1:maxdims) :: amx, aul, mx, ul
+    real                          :: h
+    real, dimension(1:maxdims)    :: xlower
     !
     GetSourceFunction = err_ok
     !
@@ -370,12 +369,12 @@ contains
     use TreeOps, only: err_ok
     use Problem, only: UpdateAuxVcycle2D, UpdateAuxVcycle3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
-    integer                             :: ll, maux, mbc, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: amx, aul, mx, ul
-    real(kind=r8)                       :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    type(nodeinfo)                :: info
+    type(funcparam)               :: dummy
+    integer                       :: ll, maux, mbc, mmaux, nrvars
+    integer, dimension(1:maxdims) :: amx, aul, mx, ul
+    real                          :: h
+    real, dimension(1:maxdims)    :: xlower
     !
     UpdateAuxInVcycle = err_ok
     !
@@ -429,12 +428,12 @@ contains
     use TreeOps, only: err_ok
     use Problem, only: SourceUpdate2D, SourceUpdate3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
-    integer                             :: ll, maux, mbc, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: amx, aul, mx, ul
-    real(kind=r8)                       :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    type(nodeinfo)                :: info
+    type(funcparam)               :: dummy
+    integer                       :: ll, maux, mbc, mmaux, nrvars
+    integer, dimension(1:maxdims) :: amx, aul, mx, ul
+    real                          :: h
+    real, dimension(1:maxdims)    :: xlower
     !
     UpdateSourceFunction = err_ok
     !
@@ -551,12 +550,12 @@ contains
     use TreeOps, only: err_ok
     use Problem, only: RelaxGrid2d, RelaxGrid3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
-    integer                             :: maux, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: amx, mx
-    real(kind=r8)                       :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    type(nodeinfo)                :: info
+    type(funcparam)               :: dummy
+    integer                       :: maux, mmaux, nrvars
+    integer, dimension(1:maxdims) :: amx, mx
+    real                          :: h
+    real, dimension(1:maxdims)    :: xlower
     !
     RelaxPatch = err_ok
     !
@@ -601,8 +600,8 @@ contains
     use TreeOps, only: err_ok, GetParentInfo
     use GridUtilities, only: Restriction2D, Restriction3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
     type(nodeinfo), pointer           :: parent
     integer                           :: ierror, nrvars
     integer, dimension(1:maxdims)     :: cmx, mx
@@ -648,14 +647,14 @@ contains
     use GridUtilities, only: Restriction2D, Restriction3D
     use Problem, only: Operator2D, Operator3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
-    type(nodeinfo), pointer             :: parent
-    integer                             :: ierror, maux, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: cmx, mx
-    integer, dimension(1:maxdims,1:2)   :: amb, mb
-    real(kind=r8)                       :: ch
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    type(nodeinfo)                     :: info
+    type(funcparam)                    :: dummy
+    type(nodeinfo), pointer            :: parent
+    integer                            :: ierror, maux, mmaux, nrvars
+    integer, dimension(1:maxdims)      :: cmx, mx
+    integer, dimension(1:maxdims,1:2)  :: amb, mb
+    real                               :: ch
+    real, dimension(1:maxdims)         :: xlower
     !
     CoarseLoadingFunction = err_ok
     !
@@ -720,14 +719,14 @@ contains
     use GridUtilities, only: Restriction2D, Restriction3D
     use Problem,       only: Operator2D, Operator3D
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
     type(nodeinfo), pointer           :: parent
     integer                           :: ierror, maux, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: amx, cmx, mx
-    integer, dimension(1:maxdims,1:2)   :: amb, mb
-    real(kind=r8)                       :: ch, h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    integer, dimension(1:maxdims)     :: amx, cmx, mx
+    integer, dimension(1:maxdims,1:2) :: amb, mb
+    real                              :: ch, h
+    real, dimension(1:maxdims)        :: xlower
     !
     RelativeTruncationError = err_ok
     !
@@ -796,11 +795,11 @@ contains
     use NodeInfoDef
     use Problem, only: Operator2D, Operator3D
     implicit none
-    type(nodeinfo) :: info
-    integer                             :: maux, mmaux, nrvars
-    integer, dimension(1:maxdims)       :: amx, mx
-    real(kind=r8)                       :: h
-    real(kind=r8), dimension(1:maxdims) :: xlower
+    type(nodeinfo)                :: info
+    integer                       :: maux, mmaux, nrvars
+    integer, dimension(1:maxdims) :: amx, mx
+    real                          :: h
+    real, dimension(1:maxdims)    :: xlower
     !
     nrvars = info%nrvars
     mx     = 1
@@ -844,8 +843,8 @@ contains
     use GridUtilities, only: BiLinProlongationP1,  BiLinProlongationP2, &
                              TriLinProlongationP1, TriLinProlongationP2
     implicit none
-    type(nodeinfo)  :: info
-    type(funcparam) :: dummy
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
     type(nodeinfo), pointer           :: parent
     integer                           :: ierror, mbc, nrvars
     integer, dimension(1:maxdims)     :: cmx, mx
