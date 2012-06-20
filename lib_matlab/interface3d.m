@@ -90,10 +90,10 @@ while(~theend)
 
     A = zeros(nrvars,(n(1)+2*mbc)*(n(2)+2*mbc)*(n(3)+2*mbc),'double');
 
-[A]=fscanf(f,'%f', [nrvars,(n(1)+2*mbc)*(n(2)+2*mbc)*(n(3)+2*mbc)]); % ghost layer included.
+    [A]=fscanf(f,'%f', [nrvars,(n(1)+2*mbc)*(n(2)+2*mbc)*(n(3)+2*mbc)]); % ghost layer included.
    
     if level == maxlevel
-  drawsurf(A,var,n,xl,xu,dx,xlg,xug,mbc);
+      drawsurf(A,var,n,xl,xu,dx,xlg,xug,mbc);
     end;
   else
     theend = 1;

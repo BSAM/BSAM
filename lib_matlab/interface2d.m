@@ -158,10 +158,10 @@ function[] = drawbox(xl,xu,lvl)
 switch lvl
   case 0
     linecolor = 'black';
-    linethick = 1;
+    linethick = 4;
   case 1
     linecolor = 'blue';
-    linethick = 1;
+    linethick = 2;
   case 2
     linecolor = 'red';
     linethick = 1;
