@@ -65,28 +65,13 @@ def plot_grid(ax,data,maxlevel=3):
             ax.vlines(xgrid, y0, y1, lw=width)
             ax.hlines(ygrid, x0, x1, lw=width)
 
-def plot_profile(ax, patch, plot_list, limits=False, direction='x'):
-    if direction == 'x':
-        n = patch['nx']
-        x = numpy.linspace(patch['x'][0], patch['x'][1], n+2)
-        a = patch['data'][:,patch['ny']/2,:]
-    else:
-        n = patch['ny']
-        x = numpy.linspace(patch['y'][0], patch['y'][1], n+2)
-        a = patch['data'][:,:,patch['nx']/2]
+def plot_xprofile(ax, patch, patch_var, *args, **kwargs):
+    n = patch['nx']
+    x = numpy.linspace(patch['x'][0], patch['x'][1], n+2)
+    a = patch['data'][:,patch['ny']/2,:]
 
     # Add plots
-    for var, style in plot_list:
-        if type(var) == tuple:
-            ax.plot(x, a[var[0]]*a[var[1]], style)
-        else:
-            ax.plot(x, a[var], style)
-
-    # Set limits
-    if limits:
-        ax.set_ylim(limits[0])
-        ax.set_xlim(limits[1])
-        #ax.set_aspect((limits[1][1]-limits[1][0])/(limits[0][1]-limits[0][0]))
+    return ax.plot(x, a[patch_var], *args, **kwargs)
 
 def plot_grid_1d(ax,data,maxlevel=10,coor='x'):
     if coor == 'x':
