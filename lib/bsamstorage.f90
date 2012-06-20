@@ -198,9 +198,9 @@ contains
       !
       high(1:ndims) = mx(1:ndims)+mbc
       !
-      allocate( &
- uniformgrid(level)%q(low(1):high(1),low(2):high(2),low(3):high(3),1:nrvars), &
- STAT=ierror)
+      allocate(uniformgrid(level)%q(low(1):high(1), &
+                                    low(2):high(2), &
+                                    low(3):high(3),1:nrvars), stat=ierror)
       !
       if (ierror/=0) then
         print *, 'AllocUniformGrids: Error allocating uniformgrid on level', &

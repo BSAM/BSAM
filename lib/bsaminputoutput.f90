@@ -126,11 +126,11 @@ contains
   subroutine WriteQ2D(q,mx,nrvars)
     use NodeInfoDef
     implicit none
-    real, dimension(0:,0:,:), intent(in) :: q
-    integer, dimension(2),    intent(in) :: mx
-    integer,                  intent(in) :: nrvars
-    integer                              :: i, j, k
-    real                                 :: rdummy
+    real, dimension(0:,0:,1:),  intent(in) :: q
+    integer, dimension(1:2),    intent(in) :: mx
+    integer,                    intent(in) :: nrvars
+    integer                                :: i, j, k
+    real                                   :: rdummy
     !
     do j=0, mx(2)+1
       do i=0, mx(1)+1
@@ -148,11 +148,11 @@ contains
   subroutine WriteQ3D(q,mx,nrvars)
     use NodeInfoDef
     implicit none
-    real, dimension(0:,0:,0:,:), intent(in) :: q
-    integer, dimension(3),       intent(in) :: mx
-    integer,                     intent(in) :: nrvars
-    integer                                 :: i, j, k, l
-    real                                    :: rdummy
+    real, dimension(0:,0:,0:,1:),  intent(in) :: q
+    integer, dimension(1:3),       intent(in) :: mx
+    integer,                       intent(in) :: nrvars
+    integer                                   :: i, j, k, l
+    real                                      :: rdummy
     !
     do k=0, mx(3)+1
       do j=0, mx(2)+1
@@ -175,18 +175,18 @@ contains
     use TreeOps,     only: CreateChild, CurrentNodeToYoungest, GetChildInfo, &
                            GetRootInfo
     implicit none
-    type(nodeinfo), pointer       :: rootinfo, info
-    logical                       :: fileexist
-    character(len=1)              :: string
-    character(len=16)             :: filename
-    integer                       :: ierror, ioerror, level, lvl
-    integer                       :: mbc, restartndims
-    integer                       :: npatch, nrvars, restartfinestlevel, r
-    integer, dimension(maxdims)   :: mx
-    integer, dimension(maxdims,2) :: mg
-    real, dimension(maxdims)      :: dx, xlower, xupper
-    real, parameter               :: small = 1.0e-08
-    real                          :: rdummy
+    type(nodeinfo), pointer           :: rootinfo, info
+    logical                           :: fileexist
+    character(len=1)                  :: string
+    character(len=16)                 :: filename
+    integer                           :: ierror, ioerror, level, lvl
+    integer                           :: mbc, restartndims
+    integer                           :: npatch, nrvars, restartfinestlevel, r
+    integer, dimension(1:maxdims)     :: mx
+    integer, dimension(1:maxdims,1:2) :: mg
+    real, dimension(1:maxdims)        :: dx, xlower, xupper
+    real, parameter                   :: small = 1.0e-08
+    real                              :: rdummy
     !
     ! On read-in the usual parent-child relationship is broken.  For simplicity,
     ! the youngest grid on level=l-1 is the parent of all level=l grids.  In
@@ -202,7 +202,7 @@ contains
     mx(1:ndims) = rootinfo%mx(1:ndims)
     mbc = rootinfo%mbc
     !
-    write(filename,'(a7,i5.5,a4)') './out/m', restartframe, '.dat'
+    write(filename,'("./out/m",i5.5,".dat")') restartframe
     !
     ! If compressed, file must be decompressed
     !call system('gunzip -f '//filename//'.gz')
@@ -399,10 +399,10 @@ contains
   subroutine ReadQ2D(q,mx,nrvars)
     use NodeInfoDef
     implicit none
-    real,    dimension(0:,0:,:), intent(out) :: q
-    integer, dimension(2),       intent(in)  :: mx
-    integer,                     intent(in)  :: nrvars
-    integer                                  :: i, j, k
+    real,    dimension(0:,0:,1:),  intent(out) :: q
+    integer, dimension(1:2),       intent(in)  :: mx
+    integer,                       intent(in)  :: nrvars
+    integer                                    :: i, j, k
     !
     do j=0, mx(2)+1
       do i=0, mx(1)+1
@@ -417,10 +417,10 @@ contains
   subroutine ReadQ3D(q,mx,nrvars)
     use NodeInfoDef
     implicit none
-    real,    dimension(0:,0:,0:,:), intent(out) :: q
-    integer, dimension(3),          intent(in)  :: mx
-    integer,                        intent(in)  :: nrvars
-    integer                                     :: i, j, k, l
+    real,    dimension(0:,0:,0:,1:),  intent(out) :: q
+    integer, dimension(1:3),          intent(in)  :: mx
+    integer,                          intent(in)  :: nrvars
+    integer                                       :: i, j, k, l
     !
     do k=0, mx(3)+1
       do j=0, mx(2)+1
@@ -440,15 +440,15 @@ contains
     use BSAMStorage,   only: AllocUniformGrids, DeallocUniformGrids
     use GridUtilities, only: BiLinProlongationP1MC, TriLinProlongationP1MC
     implicit none
-    integer, intent(in)         :: nframe
-    real,    intent(in)         :: time
-    type(nodeinfo), pointer     :: rootinfo
-    type(funcparam)             :: dummy
-    character(len=16)           :: filename
-    integer, dimension(maxdims) :: high, low, mx, mxuc, mxuf
-    real, dimension(maxdims)    :: dx, xlower, xupper
-    integer                     :: ierror, level, mbc, nrvars
-    real                        :: rdummy
+    integer, intent(in)           :: nframe
+    real,    intent(in)           :: time
+    type(nodeinfo), pointer       :: rootinfo
+    type(funcparam)               :: dummy
+    character(len=16)             :: filename
+    integer, dimension(1:maxdims) :: high, low, mx, mxuc, mxuf
+    real, dimension(1:maxdims)    :: dx, xlower, xupper
+    integer                       :: ierror, level, mbc, nrvars
+    real                          :: rdummy
     !
     ierror          = GetRootInfo(rootinfo)
     nrvars          = rootinfo%nrvars
@@ -498,7 +498,7 @@ contains
       call ApplyOnLevel(level,CopyPatchToUniformGrid,dummy)
     end do
     !
-    write(filename,'(a7,i5.5,a4)') './out/u', nframe, '.dat'
+    write(filename,'("./out/u",i5.5,".dat")') restartframe
     open(unit=54,file=filename,status='replace',form='formatted')
     !
     write(54,'(f25.12)') time
@@ -513,18 +513,20 @@ contains
       write(54,2001) xupper(1), xupper(2)
       write(54,2010) mxuf(1), mxuf(2)
       write(54,2011) 1, mxuf(1), 1, mxuf(2)
-      call WriteQ2D(uniformgrid(finestlevel)%q(0:mxuf(1)+1, 0:mxuf(2)+1, &
-                    1          , 1:nrvars),   &
-                    mxuf(1:2),nrvars)
+      call WriteQ2D(uniformgrid(finestlevel)%q(0:mxuf(1)+1, &
+                    0:mxuf(2)+1, &
+                    1          , &
+                    1:nrvars    ),mxuf(1:2),nrvars)
     case(3)
       write(54,2002) dx(1), dx(2), dx(3)
       write(54,2002) xlower(1), xlower(2), xlower(3)
       write(54,2002) xupper(1), xupper(2), xupper(3)
       write(54,2020) mxuf(1), mxuf(2), mxuf(3)
       write(54,2021) 1, mxuf(1), 1, mxuf(2), 1, mxuf(3)
-      call WriteQ3D(uniformgrid(finestlevel)%q(0:mxuf(1)+1, 0:mxuf(2)+1, &
-                    0:mxuf(3)+1 ,1:nrvars),   &
-                    mxuf(1:3),nrvars)
+      call WriteQ3D(uniformgrid(finestlevel)%q(0:mxuf(1)+1, &
+                    0:mxuf(2)+1, &
+                    0:mxuf(3)+1, &
+                    1:nrvars    ),mxuf(1:3),nrvars)
     end select
     !
     call DeallocUniformGrids
@@ -542,11 +544,11 @@ contains
     use NodeInfoDef
     use TreeOps, only: err_ok
     implicit none
-    type(nodeinfo)                :: info
-    type(funcparam)               :: dummy
-    integer, dimension(maxdims)   :: h1, h2, l1, l2, mx
-    integer, dimension(maxdims,2) :: mg
-    integer                       :: level, nrvars
+    type(nodeinfo)                    :: info
+    type(funcparam)                   :: dummy
+    integer, dimension(1:maxdims)     :: h1, h2, l1, l2, mx
+    integer, dimension(1:maxdims,1:2) :: mg
+    integer                           :: level, nrvars
     !
     CopyPatchToUniformGrid = err_ok
     !

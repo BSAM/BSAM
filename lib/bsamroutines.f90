@@ -304,7 +304,7 @@ contains
     end if
     !
     do i = 1, 2*ndims-1, 2
-      if (nrootgrids==1 .and.  mthbc(i)==2 .and. mthbc(i+1)/=2) then
+      if (nrootgrids==1 .and. mthbc(i)==2 .and. mthbc(i+1)/=2) then
         print *, 'Error: Incorrect periodic boundary conditions.'
         stop
       end if
@@ -455,12 +455,12 @@ contains
     !
     seedinfo%mx(1:ndims) = child%mx(1:ndims)/2.0
     seedinfo%dx(1:ndims) = child%dx(1:ndims)*2.0
-    seedinfo%mglobal(1:ndims,1) = 1
-    seedinfo%mglobal(1:ndims,2) = child%mglobal(1:ndims,2)/2
-    child%mbounds(1:ndims,1) = 1
+    seedinfo%mglobal(1:ndims,1) = 1.0
+    seedinfo%mglobal(1:ndims,2) = child%mglobal(1:ndims,2)/2.0
+    child%mbounds(1:ndims,1) = 1.0
     child%mbounds(1:ndims,2) = seedinfo%mx(1:ndims)
     !
-    seedinfo%mbounds(1:ndims,1) = 1
+    seedinfo%mbounds(1:ndims,1) = 1.0
     seedinfo%mbounds(1:ndims,2) = seedinfo%mx(1:ndims)
     !
     if (any(seedinfo%mx(1:ndims)/=seedinfo%mglobal(1:ndims,2))) then
@@ -582,12 +582,8 @@ contains
     ! finaltime is the calculated final time.
     !
     ! With time-subcycling (not currently implemented) a grid whose level is
-    !   greater than the rootlevel may exist at a different time than the
-    !   rootlevel grid.
-    !
-    ! KYL, 2012-03-22:
-    ! * Fixed syntax (non capitalize fortran, indentation)
-    ! * Written output should fit 80 columns in terminals
+    ! greater than the rootlevel may exist at a different time than the
+    ! rootlevel grid.
     !
     use NodeInfoDef
     use TreeOps, only: ApplyOnLevel
@@ -625,8 +621,7 @@ contains
     itperprint = timeiterations/outframes
     !
     starttime = currenttime
-    finaltime = starttime &
-                + real((lastframe-firstframe+1)*itperprint)*dtsave
+    finaltime = starttime + real((lastframe-firstframe+1)*itperprint)*dtsave
     !
     firstamr = .true.
     !
@@ -1557,8 +1552,8 @@ contains
   function GridFlagRatio(errorflags,mbounds) result(gfrresult)
     use NodeInfoDef
     implicit none
-    integer, dimension(1:,1:,1:),      intent(in)     :: errorflags
-    integer, dimension(1:maxdims,1:2), intent(in out) :: mbounds
+    integer, dimension(1:,1:,1:),      intent(in)    :: errorflags
+    integer, dimension(1:maxdims,1:2), intent(inout) :: mbounds
     real :: gfrresult
     real :: flagged, total
     !

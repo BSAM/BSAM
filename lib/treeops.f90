@@ -128,6 +128,10 @@ module TreeOps
   ! Global I/O variables
   integer :: InputUnit,OutputUnit
   !
+  ! Global variables showing memory usage (UNUSED)
+  !integer, parameter   :: iPrec = selected_int_kind(9)
+  !integer (kind=iPrec) :: MemFree, MemAllocated
+  !
 contains
   ! ---------------------------------------------------------------------------
   ! Interface routines are defined first
