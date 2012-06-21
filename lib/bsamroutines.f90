@@ -712,9 +712,9 @@ contains
         !
         ! Perform Multigrid on the multilevel mesh:
         do eqtag = 1,eqfn
-          print 101,
+          print 101, ''
           print 102, eqtag, sigma0
-          print 101,
+          print 101, ''
           call MultigridIterations
         enddo
         !
@@ -1352,7 +1352,7 @@ contains
     !
     use NodeInfoDef
     implicit none
-    type(nodeinfo),                    intent(in)    :: info
+    type(nodeinfo),                    intent(inout) :: info
     integer, dimension(1:maxdims,1:2), intent(inout) :: mbounds
     logical                                          :: havesplit
     logical, dimension(1:maxsubgrids)                :: cansplit

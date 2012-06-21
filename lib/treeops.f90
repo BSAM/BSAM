@@ -810,8 +810,7 @@ contains
         exit
       else
         CurrentLevel=CurrentLevel+1
-        level=CurrentLevel  ! Node has children
-        go down
+        level=CurrentLevel  ! Node has children; go down
         call TreeTraversal(Next,f,cond,fparam,EvalNextBefore_f)
         ! Reset global context from local context when returning from recursion
         CurrentNode => aNode
