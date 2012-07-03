@@ -186,7 +186,6 @@ contains
     integer, dimension(1:maxdims,1:2) :: mg
     real, dimension(1:maxdims)        :: dx, xlower, xupper
     real, parameter                   :: small = 1.0e-08
-    real                              :: rdummy
     !
     ! On read-in the usual parent-child relationship is broken.  For simplicity,
     ! the youngest grid on level=l-1 is the parent of all level=l grids.  In
@@ -448,7 +447,6 @@ contains
     integer, dimension(1:maxdims) :: high, low, mx, mxuc, mxuf
     real, dimension(1:maxdims)    :: dx, xlower, xupper
     integer                       :: ierror, level, mbc, nrvars
-    real                          :: rdummy
     !
     ierror          = GetRootInfo(rootinfo)
     nrvars          = rootinfo%nrvars

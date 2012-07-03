@@ -453,14 +453,14 @@ contains
       stop
     end if
     !
-    seedinfo%mx(1:ndims) = child%mx(1:ndims)/2.0
+    seedinfo%mx(1:ndims) = child%mx(1:ndims)/2
     seedinfo%dx(1:ndims) = child%dx(1:ndims)*2.0
-    seedinfo%mglobal(1:ndims,1) = 1.0
-    seedinfo%mglobal(1:ndims,2) = child%mglobal(1:ndims,2)/2.0
-    child%mbounds(1:ndims,1) = 1.0
+    seedinfo%mglobal(1:ndims,1) = 1
+    seedinfo%mglobal(1:ndims,2) = child%mglobal(1:ndims,2)/2
+    child%mbounds(1:ndims,1) = 1
     child%mbounds(1:ndims,2) = seedinfo%mx(1:ndims)
     !
-    seedinfo%mbounds(1:ndims,1) = 1.0
+    seedinfo%mbounds(1:ndims,1) = 1
     seedinfo%mbounds(1:ndims,2) = seedinfo%mx(1:ndims)
     !
     if (any(seedinfo%mx(1:ndims)/=seedinfo%mglobal(1:ndims,2))) then
@@ -552,7 +552,9 @@ contains
     !
     select case(ndims)
     case(2)
-      call QInit2D(info%q(1:mx(1),1:mx(2),1        ,1:nrvars), &
+      !call QInit2D(info%q(1:mx(1),1:mx(2),1        ,1:nrvars), &
+                   !mx(1:2),nrvars,h,xlower(1:2))
+      call QInit2D(info%q(0:mx(1)+1,0:mx(2)+1,1        ,1:nrvars), &
                    mx(1:2),nrvars,h,xlower(1:2))
     case(3)
       call QInit3D(info%q(1:mx(1),1:mx(2),1:mx(3)+1,1:nrvars), &
@@ -695,7 +697,7 @@ contains
         else
           print *, ''
           print *, ''
-          print "(' Advancing to time = ', g9.3, ' out of ', g9.3)", &
+          print "(' Advancing to time = ', g10.3, ' out of ', g10.3)", &
                 currenttime+dt, finaltime
           print *, ''
         end if
@@ -712,9 +714,9 @@ contains
         !
         ! Perform Multigrid on the multilevel mesh:
         do eqtag = 1,eqfn
-          print 101, ''
+          write(*,101)
           print 102, eqtag, sigma0
-          print 101, ''
+          write(*,101)
           call MultigridIterations
         enddo
         !
@@ -772,7 +774,7 @@ contains
     !
     ! Formats for output
     101 format(1x,78("-"))
-    102 format(1x,'eqtag = ',i0.2,', sigma0 = ',en10.3)
+    102 format(1x,'eqtag = ',i0.2,', sigma0 = ',en12.3)
     111 format(3(f25.12),1x,i8)
     121 format(1x,78("=") /,                     &
                ' Writing frame ',i0.4,' out of ',i0.4,  &

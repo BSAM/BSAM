@@ -12,7 +12,8 @@ ifeq ($(PROC),unknown)
 endif
 LIB       = ../lib
 EXE       = xbsam
-ODIR      = objects/$(TARGET)
+OMAIN     = objects
+ODIR      = $(OMAIN)/$(TARGET)
 BDIR      = ./bin
 OUT       = out
 BIN       = $(BDIR)/$(EXE)_$(TARGET)
@@ -25,7 +26,7 @@ else ifeq ($(FOR),g95)
   MOD = -fmod=$(ODIR)
 endif
 
-targets   = all_debug all_optim
+targets   = debug optim
 modes     = debug profile optim r16
 compilers = ifort gfortran pgf90 g95 sunf90 ifc
 default   = gfortran
@@ -37,10 +38,11 @@ default   = gfortran
 # Notes:
 # * For optim_ifort: -axN ? (is also compatible with generic processor)
 flags_ifort_debug   = "-r8 -fpe0 -g -fp-model precise -warn all       \
-                       -warn unused -check all -debug all -traceback"
+                       -warn nounused -check all -debug all -traceback"
 flags_ifort_profile = "-r8 -fpe0 -g -pg"
 flags_ifort_optim   = "-r8 -fpe0 -fast -heap-arrays -w -ax"
-flags_ifort_r16     = "-r16 -fpe0 -warn all"
+flags_ifort_r16     = "-r16 -fpe0 -fast -heap-arrays -w -ax"
+#flags_ifort_r16     = "-r16 -fpe0 -g -fp-model precise -warn all -warn unused -traceback -check all -debug all"
 ifeq ($(proc),i686)
   flags_ifort_optim = "-r8 -fpe0 -fast -w -xN"
 endif
@@ -63,8 +65,8 @@ flags_pgf90_optim   = "-r8 -fastsse -Mipa=fast,safe -Ktrap=inv,divz,ovf"
 #  -force-cpusubtype_ALL
 #  -ffast-math 
 flags_gfortran_debug   = "-fdefault-real-8 -g -fbounds-check \
-                          -ffpe-trap=invalid,zero,overflow   \
-                          -mieee-fp -Wall"
+                          -ffpe-trap=invalid,zero,overflow -Wall -Wextra \
+                          -Wno-unused-parameter -Wno-unused-dummy-argument"
 flags_gfortran_profile = "-fdefault-real-8 -g -pg"
 flags_gfortran_optim   = "-fdefault-real-8 -O3 -funroll-loops \
 			  -march=native -msse3"
@@ -94,7 +96,11 @@ flags_ifc_optim = "ifc -i_dynamic -CB -I$(ODIR) -module $(ODIR)"
 
 # Define some special targets
 #=============================================================================
-.PHONY: help clean dist_clean build
+.PHONY: help clean dist_clean build xbsam
+
+xbsam: optim
+	./xbsam
+	python plot.py
 
 help:
 	@echo "Usage: make <target>"
@@ -103,15 +109,15 @@ help:
 	@echo "  clean"
 	@echo "  help"
 	@echo " $(foreach t,$(sort $(targets)), $(t)\n)"
-	@echo " The default compiler target is $(default)."
+	@echo "The default compiler target is $(default)."
 
 clean:
 	rm -f $(EXE)
 	rm -f $(BDIR)/*
-	rm -f $(ODIR)/*/*
+	rm -f $(OMAIN)/*/*
 
 dist_clean: clean
-	rm -rf $(ODIR)
+	rm -rf $(OMAIN)
 	rm -rf $(BDIR)
 	rm -rf $(OUT)
 
@@ -122,6 +128,12 @@ build:
 	mkdir -p $(OUT)
 	$(MAKE) -e $(BIN)
 	ln -s $(BIN) $(EXE)
+
+# Set default targets
+#=============================================================================
+debug: debug_$(default)
+
+optim: optim_$(default)
 
 # Create the compiler specific targets
 #=============================================================================
@@ -141,14 +153,14 @@ OBJ = $(ODIR)/nodeinfodef.o     \
 
 # Use a macro (or canned sequence) to automatically create the targets
 define create_target
-  ifdef flags_$(1)_$(2)
+  ifdef flags_$(2)_$(1)
     targets += $(1)_$(2)
 $(1)_$(2):
-	$(MAKE) FOR=$(1) FFLAGS=$(flags_$(1)_$(2)) TARGET=$$@ -e build
+	$(MAKE) FOR=$(2) FFLAGS=$(flags_$(2)_$(1)) TARGET=$$@ -e build
   endif
 endef
 $(foreach mode,$(modes),$(foreach comp,$(compilers),\
-  $(eval $(call create_target,$(comp),$(mode)))))
+  $(eval $(call create_target,$(mode),$(comp)))))
 
 # Create targets for the objects
 make_macro = $(FOR) $(FFLAGS) $(MOD) -c $(1) -o $(2)
