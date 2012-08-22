@@ -1,7 +1,21 @@
 #
 # A general makefile with support for several compilers.
 #
-# Karl Yngve Lervåg 2012-06-20
+#-----------------------------------------------------------------------------
+# This file is part of BSAM.
+#
+# BSAM is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# BSAM is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# BSAM.  If not, see <http://www.gnu.org/licenses/>.
+#-----------------------------------------------------------------------------
 #
 
 # Set some system variables 
@@ -34,7 +48,7 @@ default   = gfortran
 # Define set of compiler flags for the different compilers
 #=============================================================================
 # ifort flags
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Notes:
 # * For optim_ifort: -axN ? (is also compatible with generic processor)
 flags_ifort_debug   = "-r8 -fpe0 -g -fp-model precise -warn all       \
@@ -48,14 +62,14 @@ ifeq ($(proc),i686)
 endif
 
 # pgf90 flags
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 flags_pgf90_debug   = "-r8 -g -Kieee -Ktrap=inv,divz,ovf -Mbounds \
 		      -Mchkfpstk -Mchkptr -Minform=inform"
 flags_pgf90_profile = "-r8 -pg -O0 -Mprof=lines"
 flags_pgf90_optim   = "-r8 -fastsse -Mipa=fast,safe -Ktrap=inv,divz,ovf"
 
 # gfortran flags
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Optional flags, may be useful for other architectures
 #  -mtune=nocona
 #  -cpu=970
@@ -72,12 +86,12 @@ flags_gfortran_optim   = "-fdefault-real-8 -O3 -funroll-loops \
 			  -march=native -msse3"
 
 # sunf90 flags
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 flags_sunf90_debug  = "-xtypemap=real:64 -C -g -w4 -stackvar"
 flags_sunf90_optim  = "-xtypemap=real:64 -fast"
 
 # g95 flags
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Other options that might be useful
 #  -ffast-math
 #  -march=nocona
@@ -90,7 +104,7 @@ ifneq ($(proc),x86_64)
 endif
 
 # ifc flags
-#---------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 flags_ifc_optim = "ifc -i_dynamic -O3 -tpp7 -I$(ODIR) -module $(ODIR)"
 flags_ifc_optim = "ifc -i_dynamic -CB -I$(ODIR) -module $(ODIR)"
 
@@ -100,7 +114,6 @@ flags_ifc_optim = "ifc -i_dynamic -CB -I$(ODIR) -module $(ODIR)"
 
 xbsam: optim
 	./xbsam
-	python plot.py
 
 help:
 	@echo "Usage: make <target>"

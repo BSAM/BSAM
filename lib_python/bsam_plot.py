@@ -67,11 +67,12 @@ def plot_grid(ax,data,maxlevel=3):
 
 def plot_xprofile(ax, patch, patch_var, *args, **kwargs):
     n = patch['nx']
+    m = patch['ny']/2
     x = numpy.linspace(patch['x'][0], patch['x'][1], n+2)
-    a = patch['data'][:,patch['ny']/2,:]
+    a = patch['data'][patch_var,m,:]
 
     # Add plots
-    return ax.plot(x, a[patch_var], *args, **kwargs)
+    return ax.plot(x, a, *args, **kwargs)
 
 def plot_grid_1d(ax,data,maxlevel=10,coor='x'):
     if coor == 'x':
