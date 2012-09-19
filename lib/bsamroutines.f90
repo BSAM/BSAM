@@ -68,7 +68,7 @@ contains
     namelist /rundata/ dt, errortype, getafterstepstats, maxvcycles,          &
                        nsmoothingpasses, omega, outframes, outputuniformmesh, &
                        qerrortol, restart, restartframe, syncelliptic,        &
-                       timeiterations, updateauxfreq, eqfn
+                       timeiterations, updateauxfreq, eqfn, ldata
     !
     ! Initializations
     errortype         = 1
@@ -86,6 +86,7 @@ contains
     timeiterations    = 1
     updateauxfreq     = 1
     eqfn              = 6
+    ldata             = .true.
     !
     ! Read general input data from rundata.dat
     open(unit=75, file='rundata.dat', &

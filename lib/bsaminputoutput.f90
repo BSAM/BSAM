@@ -58,6 +58,8 @@ contains
     character(len=16)   :: filename
     integer             :: level
     !
+    if (.not. ldata) return
+    !
     ! Matlab format
     write(filename,'("./out/m",i5.5,".dat")') nframe
     open(unit=54,file=filename, &

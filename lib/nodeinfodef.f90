@@ -50,6 +50,7 @@ module NodeInfoDef
   logical :: periodicboundaryconditions
   logical :: restart
   logical :: syncelliptic
+  logical :: ldata
   !
   integer, parameter                       :: errflagdefault = 1
   integer, parameter                       :: errflaguser    = 10
