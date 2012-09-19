@@ -11,7 +11,7 @@ def plot_limits(ax, limits):
     ax.set_ylim(limits[0])
     ax.set_xlim(limits[1])
 
-def plot_interface(ax, patch, ivar=1):
+def plot_interface(ax, patch, ivar=0):
     nx = patch['nx']
     ny = patch['ny']
     x  = numpy.linspace(patch['x'][0], patch['x'][1], nx+2)
@@ -73,6 +73,15 @@ def plot_xprofile(ax, patch, patch_var, *args, **kwargs):
 
     # Add plots
     return ax.plot(x, a, *args, **kwargs)
+
+def plot_yprofile(ax, patch, patch_var, *args, **kwargs):
+    n = patch['nx']/2
+    m = patch['ny']
+    y = numpy.linspace(patch['y'][0], patch['y'][1], m+2)
+    a = patch['data'][patch_var,:,n]
+
+    # Add plots
+    return ax.plot(y, a, *args, **kwargs)
 
 def plot_grid_1d(ax,data,maxlevel=10,coor='x'):
     if coor == 'x':
