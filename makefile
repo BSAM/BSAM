@@ -135,12 +135,12 @@ dist_clean: clean
 	rm -rf $(OUT)
 
 build:
-	rm -f $(EXE)
-	mkdir -p $(ODIR)
-	mkdir -p $(BDIR)
-	mkdir -p $(OUT)
-	$(MAKE) -e $(BIN)
-	ln -s $(BIN) $(EXE)
+	@rm -f $(EXE)
+	@mkdir -p $(ODIR)
+	@mkdir -p $(BDIR)
+	@mkdir -p $(OUT)
+	@$(MAKE) -e $(BIN)
+	@ln -s $(BIN) $(EXE)
 
 # Set default targets
 #=============================================================================
@@ -169,7 +169,7 @@ define create_target
   ifdef flags_$(2)_$(1)
     targets += $(1)_$(2)
 $(1)_$(2):
-	$(MAKE) FOR=$(2) FFLAGS=$(flags_$(2)_$(1)) TARGET=$$@ -e build
+	@$(MAKE) FOR=$(2) FFLAGS=$(flags_$(2)_$(1)) TARGET=$$@ -e build
   endif
 endef
 $(foreach mode,$(modes),$(foreach comp,$(compilers),\
