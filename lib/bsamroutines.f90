@@ -87,6 +87,7 @@ contains
     updateauxfreq     = 1
     eqfn              = 6
     ldata             = .true.
+    lconverged        = .false.
     !
     ! Read general input data from rundata.dat
     open(unit=75, file='rundata.dat', &

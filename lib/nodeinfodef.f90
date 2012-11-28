@@ -51,6 +51,7 @@ module NodeInfoDef
   logical :: restart
   logical :: syncelliptic
   logical :: ldata
+  logical :: lconverged
   !
   integer, parameter                       :: errflagdefault = 1
   integer, parameter                       :: errflaguser    = 10
