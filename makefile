@@ -24,7 +24,7 @@ PROC      = $(shell uname -p)
 ifeq ($(PROC),unknown)
   PROC    = $(shell uname -m)
 endif
-LIB       = ../lib
+LIB       = ../../lib
 EXE       = xbsam
 OMAIN     = objects
 ODIR      = $(OMAIN)/$(TARGET)
