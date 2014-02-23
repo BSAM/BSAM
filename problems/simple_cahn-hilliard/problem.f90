@@ -367,24 +367,21 @@ contains
     use GridUtilities, only: ULap3D
     use ProblemDef
     implicit none
-    real, dimension(:,:,:,:), intent(out) :: q
-    integer, dimension(3),     intent(in) :: mx
-    integer,                   intent(in) :: nrvars
-    real,                      intent(in) :: h
-    real, dimension(3),        intent(in) :: xlower
-    integer :: i, j, k
-    real    :: r1, r2, r3, r4, tmp, x, y, z
+    real, dimension(0:,0:,0:,1:), intent(out) :: q
+    integer, dimension(3),        intent(in) :: mx
+    integer,                      intent(in) :: nrvars
+    real,                         intent(in) :: h
+    real, dimension(3),           intent(in) :: xlower
+    real    :: r1,r2,r3,r4,tmp,x,y,z
+    integer :: i j k
     !
+    q = 0.0
     !
-    ! TODO: This should probably be
-    !         do ijk = 0, mx(*) + 1
-    print *, "READ TODO in sample problem.f90:QInit3D(...)"
-    !
-    do i = 1, mx(1)
+    do i = 0, mx(1)+1
       x = (i-0.5)*h+xlower(1)
-      do j = 1, mx(2)
+      do j = 0, mx(2)+1
         y = (j-0.5)*h+xlower(2)
-        do k = 1, mx(3)
+        do k = 0, mx(3)+1
           z = (k-0.5)*h+xlower(3)
           !
           r1 = sqrt((x-1.6)**2+(y-1.6)**2+(z-1.6)**2)
