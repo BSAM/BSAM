@@ -373,7 +373,7 @@ contains
     real,                         intent(in) :: h
     real, dimension(3),           intent(in) :: xlower
     real    :: r1,r2,r3,r4,tmp,x,y,z
-    integer :: i j k
+    integer :: i,j,k
     !
     q = 0.0
     !
@@ -395,12 +395,12 @@ contains
       end do
     end do
   end subroutine QInit3D
-  subroutine AfterStep3D(q,qparent,mx,nrvars,h,xlower,level)
+  subroutine AfterStep3D(q,qc,mx,nrvars,h,xlower,level)
     use NodeInfoDef
     use ProblemDef
     implicit none
     real, dimension(0:,0:,0:,1:), intent(in) :: q
-    real, dimension(0:,0:,0:,1:), intent(in) :: qparent
+    real, dimension(0:,0:,0:,1:), intent(in) :: qc
     integer, dimension(1:3),      intent(in) :: mx
     integer,                      intent(in) :: nrvars
     real,                         intent(in) :: h
@@ -623,19 +623,19 @@ contains
     !
     ! Calculate the 3D flux function:
     f1(0:mx(1),1:mx(2),1:mx(3)) &
-       = Mob(0.5_r8*(c(1:mx(1)+1,1:mx(2),1:mx(3))+c(0:mx(1),1:mx(2),1:mx(3)))) &
+       = Mob(0.5*(c(1:mx(1)+1,1:mx(2),1:mx(3))+c(0:mx(1),1:mx(2),1:mx(3)))) &
          * (a(1:mx(1)+1,1:mx(2),1:mx(3))-a(0:mx(1),1:mx(2),1:mx(3)))
     !
     f2(1:mx(1),0:mx(2),1:mx(3)) &
-       = Mob(0.5_r8*(c(1:mx(1),1:mx(2)+1,1:mx(3))+c(1:mx(1),0:mx(2),1:mx(3)))) &
+       = Mob(0.5*(c(1:mx(1),1:mx(2)+1,1:mx(3))+c(1:mx(1),0:mx(2),1:mx(3)))) &
          * (a(1:mx(1),1:mx(2)+1,1:mx(3))-a(1:mx(1),0:mx(2),1:mx(3)))
     !
     f3(1:mx(1),1:mx(2),0:mx(3)) &
-       = Mob(0.5_r8*(c(1:mx(1),1:mx(2),1:mx(3)+1)+c(1:mx(1),1:mx(2),0:mx(3)))) &
+       = Mob(0.5*(c(1:mx(1),1:mx(2),1:mx(3)+1)+c(1:mx(1),1:mx(2),0:mx(3)))) &
          * (a(1:mx(1),1:mx(2),1:mx(3)+1)-a(1:mx(1),1:mx(2),0:mx(3)))
     !
     ! Calculate the divergence of the flux:
-    ulapmobresult(1:mx(1),1:mx(2),1:mx(3)) &
+    res(1:mx(1),1:mx(2),1:mx(3)) &
                   = UDiv3D(f1(0:mx(1),1:mx(2),1:mx(3)), &
                            f2(1:mx(1),0:mx(2),1:mx(3)), &
                            f3(1:mx(1),1:mx(2),0:mx(3)))
