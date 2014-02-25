@@ -14,4 +14,6 @@ nsmoothingpasses = 2
 omega = 1.0d+00
 qerrortol = 1.0d-08
 
-dt = 1.0d-01/
+dt = 1.0d-01
+eqfn = 1
+/
