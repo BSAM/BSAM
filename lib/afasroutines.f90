@@ -464,10 +464,9 @@ contains
     !
     select case(ndims)
     case(2)
-     !info%f(1:mx(1),1:mx(2),1,1:nrvars)             &
-     !       = info%ftmp(1:mx(1),1:mx(2),1,1:nrvars) &
       info%f(1:mx(1),1:mx(2),1,1:nrvars)             &
-               = SourceUpdate2D(info%q(   ll: ul(1),ll: ul(2),1,1:nrvars), &
+             = info%ftmp(1:mx(1),1:mx(2),1,1:nrvars) &
+               + SourceUpdate2D(info%q(   ll: ul(1),ll: ul(2),1,1:nrvars), &
                                 info%qold(ll: ul(1),ll: ul(2),1,1:nrvars), &
                                 info%aux( ll:aul(1),ll:aul(2),1,1:mmaux ), &
                                 ll,mx(1:2),nrvars,maux,mbc,h,xlower(1:2))
