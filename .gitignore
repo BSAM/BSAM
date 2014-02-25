@@ -1,7 +1,9 @@
-.hg*
-.tags
-dda*
-flow*
-knut*
-syntax*
-*_steve
+bin/
+objects/
+out/
+lib_python
+bsam_*.py
+output.dat
+xbsam
+*.pyc
+tags
