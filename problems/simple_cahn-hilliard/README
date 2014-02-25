@@ -1,0 +1,7 @@
+To make this test problem compile and to plot the data, you need to do
+something like this:
+
+  ln -s ../../makefile
+  ln -s ../../lib_python
+  ln -s lib_python/bsam_io.py
+  ln -s lib_python/bsam_plot.py
