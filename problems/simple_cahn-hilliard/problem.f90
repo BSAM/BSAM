@@ -816,6 +816,7 @@ contains
     real,    intent(in) :: residual, oldresidual
     integer, intent(in) :: eqtag
     !
-    MultiGridUserBreak = (oldresidual <= residual)
+    !MultiGridUserBreak = (oldresidual <= residual)
+    MultiGridUserBreak = .false.
   end function MultiGridUserBreak
 end module Problem
